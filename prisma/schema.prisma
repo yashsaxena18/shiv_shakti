@@ -16,6 +16,7 @@ model User {
   role             String            @default("candidate")
   profileCompleted Boolean           @default(false)
   profile          CandidateProfile?
+  employerProfile  EmployerProfile?
   payments         Payment[]
 
   // Forgot Password
@@ -90,4 +91,20 @@ model Payment {
   currency          String   @default("INR")
   status            String   @default("SUCCESS")
   createdAt         DateTime @default(now())
+}
+
+model EmployerProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employerName       String
+  companyName        String
+  phone              String
+  email              String
+  companyAddress     String
+  candidatesRequired Int
+  status             String   @default("PENDING")
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }

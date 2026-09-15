@@ -2,32 +2,51 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/require-admin";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     // Allow only authenticated admin
     await requireAdmin();
 
+    const { searchParams } = new URL(req.url);
+    const type = searchParams.get("type"); // "paid" or "unpaid"
+
     const candidates = await prisma.candidateProfile.findMany({
       include: {
-        user: true,
+        user: {
+          include: {
+            payments: true,
+          }
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
+    // Filter by type if provided
+    let filteredCandidates = candidates;
+    if (type === "paid") {
+      filteredCandidates = candidates.filter(
+        (c) => c.user?.payments?.some((p) => p.status === "SUCCESS")
+      );
+    } else if (type === "unpaid") {
+      filteredCandidates = candidates.filter(
+        (c) => !c.user?.payments?.some((p) => p.status === "SUCCESS")
+      );
+    }
+
     const stats = {
-      total: candidates.length,
-      applied: candidates.filter(c => c.status === "Applied").length,
-      shortlisted: candidates.filter(c => c.status === "Shortlisted").length,
-      interview: candidates.filter(c => c.status === "Interview").length,
-      selected: candidates.filter(c => c.status === "Selected").length,
-      rejected: candidates.filter(c => c.status === "Rejected").length,
+      total: filteredCandidates.length,
+      applied: filteredCandidates.filter(c => c.status === "Applied").length,
+      shortlisted: filteredCandidates.filter(c => c.status === "Shortlisted").length,
+      interview: filteredCandidates.filter(c => c.status === "Interview").length,
+      selected: filteredCandidates.filter(c => c.status === "Selected").length,
+      rejected: filteredCandidates.filter(c => c.status === "Rejected").length,
     };
 
     return NextResponse.json({
       success: true,
-      candidates,
+      candidates: filteredCandidates,
       stats,
     });
 

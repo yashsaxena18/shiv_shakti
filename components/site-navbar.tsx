@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type MouseEvent } from "react";
-import { ArrowRight, LogIn, LogOut, Menu, Moon, Sun, UserRound, X } from "lucide-react";
+import { ArrowRight, LogIn, LogOut, Menu, Moon, Sun, UserRound, X, Building2 } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "/#home", section: "home" },
@@ -142,7 +142,7 @@ export function SiteNavbar() {
   };
 
   const dashboardHref =
-    user?.role === "admin" ? "/admin" : "/candidate/dashboard";
+    user?.role === "admin" ? "/admin" : user?.role === "employer" ? "/employer/dashboard" : "/candidate/dashboard";
 
   const themeButton = mounted ? (
     <button
@@ -247,6 +247,14 @@ export function SiteNavbar() {
                 </>
               ) : (
                 <>
+                  <Link
+                    href="/employer/login"
+                    className="ml-1 inline-flex h-9 items-center gap-1.5 rounded-xl px-3.5 text-xs font-semibold text-zinc-700 transition-all hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white"
+                  >
+                    <Building2 size={14} />
+                    Employer
+                  </Link>
+
                   <Link
                     href="/login"
                     className="ml-1 inline-flex h-9 items-center gap-1.5 rounded-xl px-3.5 text-xs font-semibold text-zinc-700 transition-all hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white"
@@ -363,24 +371,34 @@ export function SiteNavbar() {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   <Link
-                    href="/login"
+                    href="/employer/login"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 text-xs font-semibold text-zinc-800 dark:border-white/10 dark:text-white"
                   >
-                    <LogIn size={15} />
-                    Login
+                    <Building2 size={15} />
+                    Employer Portal
                   </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 text-xs font-semibold text-zinc-800 dark:border-white/10 dark:text-white"
+                    >
+                      <LogIn size={15} />
+                      Login
+                    </Link>
 
-                  <Link
-                    href="/register"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-zinc-950 px-3 text-xs font-semibold text-white dark:bg-white dark:text-zinc-950"
-                  >
-                    Register
-                    <ArrowRight size={14} />
-                  </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-zinc-950 px-3 text-xs font-semibold text-white dark:bg-white dark:text-zinc-950"
+                    >
+                      Register
+                      <ArrowRight size={14} />
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>

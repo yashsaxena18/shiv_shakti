@@ -1,16 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import {
   LayoutDashboard,
   Users,
   Settings,
   LogOut,
+  Building2,
 } from "lucide-react";
 
-export default function AdminSidebar() {
+function AdminSidebarContent() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const logout = async () => {
@@ -36,9 +39,19 @@ export default function AdminSidebar() {
       icon: LayoutDashboard,
     },
     {
-      name: "Candidates",
-      href: "/admin/candidates",
+      name: "Paid Candidates",
+      href: "/admin/candidates?type=paid",
+      icon: Users, // You can use a different icon like 'Crown' if imported
+    },
+    {
+      name: "Unpaid Candidates",
+      href: "/admin/candidates?type=unpaid",
       icon: Users,
+    },
+    {
+      name: "Employers",
+      href: "/admin/employers",
+      icon: Building2,
     },
     {
       name: "Settings",
@@ -69,7 +82,11 @@ export default function AdminSidebar() {
         {menus.map((menu) => {
           const Icon = menu.icon;
 
-          const active = pathname === menu.href;
+          const typeParam = searchParams.get("type");
+          let currentHref = pathname;
+          if (typeParam) currentHref += `?type=${typeParam}`;
+          
+          const active = currentHref === menu.href;
 
           return (
             <Link
@@ -103,5 +120,13 @@ export default function AdminSidebar() {
       </div>
 
     </aside>
+  );
+}
+
+export default function AdminSidebar() {
+  return (
+    <Suspense fallback={<aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r bg-white shadow-sm lg:flex lg:flex-col"></aside>}>
+      <AdminSidebarContent />
+    </Suspense>
   );
 }

@@ -4,6 +4,8 @@
 import Link from "next/link";
 import { toast } from "sonner";
 import { Search, X } from "lucide-react";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { jobCategories} from "@/lib/job-categories";
 
@@ -19,7 +21,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function CandidatesPage() {
+function CandidatesContent() {
+  const searchParams = useSearchParams();
+  const typeParam = searchParams.get("type"); // "paid" | "unpaid" | null
+  
   const [candidates, setCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,13 +52,14 @@ export default function CandidatesPage() {
 
   useEffect(() => {
     loadCandidates();
-  }, []);
+  }, [typeParam]);
 
   const loadCandidates = async () => {
     try {
       setLoading(true);
 
-      const response = await fetch("/api/admin/candidates");
+      const url = typeParam ? `/api/admin/candidates?type=${typeParam}` : "/api/admin/candidates";
+      const response = await fetch(url);
       const result = await response.json();
 
       if (result.success) {
@@ -239,7 +245,7 @@ export default function CandidatesPage() {
       <header className="border-b bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6">
           <h1 className="text-2xl font-bold sm:text-3xl">
-            Candidate Management
+            {typeParam === "paid" ? "Paid Candidates" : typeParam === "unpaid" ? "Unpaid Candidates" : "All Candidates"}
           </h1>
         </div>
       </header>
@@ -834,5 +840,13 @@ export default function CandidatesPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function CandidatesPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-zinc-500">Loading candidates...</div>}>
+      <CandidatesContent />
+    </Suspense>
   );
 }

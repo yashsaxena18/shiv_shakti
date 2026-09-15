@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   X,
+  Building2,
 } from "lucide-react";
 
 type Props = {
@@ -32,6 +33,11 @@ export default function MobileSidebar({
       name: "Candidates",
       href: "/admin/candidates",
       icon: Users,
+    },
+    {
+      name: "Employers",
+      href: "/admin/employers",
+      icon: Building2,
     },
     {
       name: "Settings",
