@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { jobCategories} from "@/lib/job-categories";
+import { CalendarDays } from "lucide-react";
 
 import {
   AlertDialog,
@@ -27,6 +28,16 @@ function CandidatesContent() {
   
   const [candidates, setCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Interview Scheduling State
+  const [schedulingFor, setSchedulingFor] = useState<any>(null);
+  const [interviewForm, setInterviewForm] = useState({
+    companyName: "",
+    date: "",
+    time: "",
+    location: "",
+  });
+  const [schedulingProcess, setSchedulingProcess] = useState(false);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -222,6 +233,73 @@ function CandidatesContent() {
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong.");
+    }
+  };
+
+  const markAsPaidCash = async (id: string) => {
+    const amountStr = window.prompt("Enter payment amount (e.g., 499 or 799):", "399");
+    if (!amountStr) return;
+
+    const amount = Number(amountStr);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid amount.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/candidates/${id}/mark-paid`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        await loadCandidates();
+        toast.success("Candidate marked as paid via Cash.");
+      } else {
+        toast.error(result.message || "Unable to update payment.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong.");
+    }
+  };
+
+  const scheduleInterview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!schedulingFor) return;
+
+    setSchedulingProcess(true);
+    try {
+      const response = await fetch(`/api/admin/candidates/${schedulingFor.id}/schedule-interview`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(interviewForm),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        toast.success("Interview scheduled & Email sent!");
+        
+        // Open WhatsApp automatically with pre-filled message
+        const waMessage = `Hello ${schedulingFor.user.fullName},%0A%0AWe are pleased to inform you that your interview is scheduled!%0A%0A*Company:* ${interviewForm.companyName}%0A*Date:* ${interviewForm.date}%0A*Time:* ${interviewForm.time}%0A*Location/Link:* ${interviewForm.location}%0A%0APlease be prepared and on time.%0A%0ARegards,%0AShiv Shakti Multi Service`;
+        
+        window.open(`https://wa.me/91${schedulingFor.phone}?text=${waMessage}`, "_blank");
+        
+        setSchedulingFor(null);
+        setInterviewForm({ companyName: "", date: "", time: "", location: "" });
+      } else {
+        toast.error(result.message || "Unable to schedule interview.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong.");
+    } finally {
+      setSchedulingProcess(false);
     }
   };
 
@@ -545,6 +623,23 @@ function CandidatesContent() {
 
                             <td className="p-4">
                               <div className="flex gap-2">
+                                {!candidate.user?.payments?.some((p: any) => p.status === "SUCCESS") && (
+                                  <button
+                                    onClick={() => markAsPaidCash(candidate.id)}
+                                    className="rounded bg-green-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700"
+                                  >
+                                    Mark Paid (Cash)
+                                  </button>
+                                )}
+
+                                <button
+                                  onClick={() => setSchedulingFor(candidate)}
+                                  className="flex items-center gap-1 rounded bg-orange-500 px-3 py-2 text-xs text-white transition hover:bg-orange-600"
+                                >
+                                  <CalendarDays size={14} />
+                                  Schedule
+                                </button>
+
                                 <Link
                                   href={`/admin/candidates/${candidate.id}`}
                                   className="rounded bg-blue-600 px-3 py-2 text-xs text-white transition hover:bg-blue-700"
@@ -725,6 +820,23 @@ function CandidatesContent() {
                       )}
 
                       <div className="mt-5 grid grid-cols-2 gap-2">
+                        {!candidate.user?.payments?.some((p: any) => p.status === "SUCCESS") && (
+                          <button
+                            onClick={() => markAsPaidCash(candidate.id)}
+                            className="col-span-2 rounded-xl bg-green-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-green-700"
+                          >
+                            Mark Paid (Cash)
+                          </button>
+                        )}
+                        
+                        <button
+                          onClick={() => setSchedulingFor(candidate)}
+                          className="col-span-2 flex items-center justify-center gap-1 rounded-xl bg-orange-500 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600"
+                        >
+                          <CalendarDays size={16} />
+                          Schedule Interview
+                        </button>
+
                         <Link
                           href={`/admin/candidates/${candidate.id}`}
                           className="rounded-xl bg-blue-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-blue-700"
@@ -839,13 +951,95 @@ function CandidatesContent() {
           )}
         </div>
       </main>
+
+      {/* Schedule Interview Modal */}
+      {schedulingFor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Schedule Interview</h2>
+              <button 
+                onClick={() => setSchedulingFor(null)}
+                className="rounded-full p-2 hover:bg-zinc-100"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <p className="mb-4 text-sm text-zinc-500">
+              Scheduling for <strong>{schedulingFor.user.fullName}</strong>.
+            </p>
+
+            <form onSubmit={scheduleInterview} className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-zinc-700">Company Name</label>
+                <input
+                  required
+                  type="text"
+                  value={interviewForm.companyName}
+                  onChange={(e) => setInterviewForm({...interviewForm, companyName: e.target.value})}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-zinc-900"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-zinc-700">Date</label>
+                  <input
+                    required
+                    type="date"
+                    value={interviewForm.date}
+                    onChange={(e) => setInterviewForm({...interviewForm, date: e.target.value})}
+                    className="w-full rounded-xl border px-3 py-2 outline-none focus:border-zinc-900"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-zinc-700">Time</label>
+                  <input
+                    required
+                    type="time"
+                    value={interviewForm.time}
+                    onChange={(e) => setInterviewForm({...interviewForm, time: e.target.value})}
+                    className="w-full rounded-xl border px-3 py-2 outline-none focus:border-zinc-900"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-zinc-700">Location / Meet Link</label>
+                <input
+                  required
+                  type="text"
+                  value={interviewForm.location}
+                  onChange={(e) => setInterviewForm({...interviewForm, location: e.target.value})}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-zinc-900"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={schedulingProcess}
+                className="mt-6 w-full rounded-xl bg-zinc-900 py-3 text-center font-bold text-white transition hover:bg-zinc-800 disabled:opacity-70"
+              >
+                {schedulingProcess ? "Scheduling & Sending..." : "Schedule & Send Email + WA"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default function CandidatesPage() {
+export default function AdminCandidatesPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-zinc-500">Loading candidates...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
       <CandidatesContent />
     </Suspense>
   );

@@ -186,6 +186,14 @@ export default function CandidateDashboardPage() {
   const profileStatus = profile?.user?.profileCompleted ? "Completed" : "Incomplete";
   const isPaid = payment?.status === "SUCCESS";
 
+  const interviews = profile?.interviews || [];
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const upcomingInterviews = interviews.filter((int: any) => new Date(int.date) >= today);
+  const pastInterviews = interviews.filter((int: any) => new Date(int.date) < today);
+
   return (
     <div className="min-h-screen bg-zinc-50">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
@@ -257,8 +265,8 @@ export default function CandidateDashboardPage() {
             {/* Dashboard Stats */}
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <InfoCard label="Preferred Job Field" value={jobField} />
-              <InfoCard label="Total Interviews" value="0" />
-              <InfoCard label="Scheduled Interviews" value="0" />
+              <InfoCard label="Total Interviews" value={interviews.length.toString()} />
+              <InfoCard label="Scheduled Interviews" value={upcomingInterviews.length.toString()} />
               <InfoCard label="City" value={profile?.city || "Not Added"} />
             </div>
 
@@ -267,13 +275,54 @@ export default function CandidateDashboardPage() {
               {/* INTERVIEW SCHEDULE */}
               <SectionCard
                 title="Interview Schedule"
-                description={<>Your upcoming job interviews.</>}
+                description={<>Your upcoming and past job interviews.</>}
               >
-                <div className="flex flex-col items-center justify-center py-10 text-center text-zinc-500">
-                   <Calendar className="h-12 w-12 text-zinc-300 mb-3" />
-                   <p>No interviews scheduled yet.</p>
-                   <p className="text-sm">We will notify you when an employer shortlists your profile.</p>
-                </div>
+                {interviews.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-10 text-center text-zinc-500">
+                     <Calendar className="h-12 w-12 text-zinc-300 mb-3" />
+                     <p>No interviews scheduled yet.</p>
+                     <p className="text-sm">We will notify you when an employer shortlists your profile.</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-6">
+                    {/* UPCOMING */}
+                    {upcomingInterviews.length > 0 && (
+                      <div>
+                        <h3 className="mb-3 font-semibold text-green-600">Upcoming Interviews</h3>
+                        <div className="flex flex-col gap-3">
+                          {upcomingInterviews.map((interview: any) => (
+                            <div key={interview.id} className="rounded-xl border border-green-200 bg-green-50 p-4">
+                              <p className="font-bold text-zinc-900">{interview.companyName}</p>
+                              <div className="mt-2 grid grid-cols-2 gap-2 text-sm text-zinc-600">
+                                <div className="flex items-center gap-1"><Calendar size={14} /> {new Date(interview.date).toLocaleDateString('en-IN')}</div>
+                                <div className="flex items-center gap-1"><Clock size={14} /> {interview.time}</div>
+                              </div>
+                              <p className="mt-2 text-sm text-zinc-700"><strong>Location/Link:</strong> {interview.location}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* PAST */}
+                    {pastInterviews.length > 0 && (
+                      <div>
+                        <h3 className="mb-3 font-semibold text-zinc-500">Previous Interviews</h3>
+                        <div className="flex flex-col gap-3">
+                          {pastInterviews.map((interview: any) => (
+                            <div key={interview.id} className="rounded-xl border bg-zinc-50 p-4 opacity-75">
+                              <p className="font-bold text-zinc-900">{interview.companyName}</p>
+                              <div className="mt-2 grid grid-cols-2 gap-2 text-sm text-zinc-600">
+                                <div className="flex items-center gap-1"><Calendar size={14} /> {new Date(interview.date).toLocaleDateString('en-IN')}</div>
+                                <div className="flex items-center gap-1"><Clock size={14} /> {interview.time}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </SectionCard>
 
               {/* PROFILE OVERVIEW */}

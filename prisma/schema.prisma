@@ -67,8 +67,24 @@ model CandidateProfile {
   headline String?
   about    String?
 
+  interviews Interview[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Interview {
+  id               String           @id @default(cuid())
+  candidateId      String
+  candidateProfile CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  companyName      String
+  date             DateTime
+  time             String
+  location         String
+  status           String           @default("SCHEDULED")
+  
+  createdAt        DateTime         @default(now())
 }
 
 model PasswordResetOTP {
@@ -83,9 +99,13 @@ model Payment {
   id                String   @id @default(cuid())
   userId            String
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  razorpayOrderId   String   @unique
-  razorpayPaymentId String   @unique
-  receiptNumber     String?   @unique
+  
+  mode              String   @default("ONLINE")
+  
+  razorpayOrderId   String?  @unique
+  razorpayPaymentId String?  @unique
+  receiptNumber     String?  @unique
+  
   amount            Int
   currency          String   @default("INR")
   status            String   @default("SUCCESS")

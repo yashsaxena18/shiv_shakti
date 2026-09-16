@@ -239,6 +239,13 @@ export async function GET(request: Request) {
         where: {
           userId,
         },
+        include: {
+          interviews: {
+            orderBy: {
+              date: 'desc'
+            }
+          }
+        }
       });
 
     console.log(
