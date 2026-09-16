@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { UserCircle2, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -15,6 +15,7 @@ import { ChevronDown } from "lucide-react";
 
 export function DashboardNav() {
   const router = useRouter();
+  const pathname = usePathname();
   const [name, setName] = useState("Candidate");
 
   useEffect(() => {
@@ -52,17 +53,16 @@ export function DashboardNav() {
 
           <Link
             href="/candidate/dashboard"
-            className="text-sm hover:text-orange-500"
+            className={`text-sm ${
+              pathname === "/candidate/dashboard"
+                ? "text-orange-500 font-bold"
+                : "text-zinc-600 hover:text-orange-500"
+            }`}
           >
             Dashboard
           </Link>
 
-          <Link
-            href="/candidate/profile"
-            className="text-sm hover:text-orange-500"
-          >
-            My Profile
-          </Link>
+
 
           <DropdownMenu>
 
@@ -92,13 +92,7 @@ export function DashboardNav() {
 
             <DropdownMenuContent align="end">
 
-              <DropdownMenuItem asChild>
 
-                <Link href="/candidate/profile">
-                  My Profile
-                </Link>
-
-              </DropdownMenuItem>
 
               <DropdownMenuItem
                 onClick={logout}
@@ -139,13 +133,7 @@ export function DashboardNav() {
 
               </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
 
-                <Link href="/candidate/profile">
-                  My Profile
-                </Link>
-
-              </DropdownMenuItem>
 
               <DropdownMenuItem
                 onClick={logout}

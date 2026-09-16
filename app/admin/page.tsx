@@ -23,31 +23,48 @@ type Candidate = {
 
 
 export default function AdminDashboardPage() {
-const [candidates, setCandidates] = useState<any[]>([]);
-const [loading, setLoading] = useState(true);
+  const [candidates, setCandidates] = useState<any[]>([]);
+  const [employers, setEmployers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-  async function loadCandidates() {
-    try {
-      const response = await fetch("/api/admin/candidates");
-      const data = await response.json();
+    async function loadData() {
+      try {
+        const [candidatesRes, employersRes] = await Promise.all([
+          fetch("/api/admin/candidates"),
+          fetch("/api/admin/employers"),
+        ]);
+        
+        const candidatesData = await candidatesRes.json();
+        const employersData = await employersRes.json();
 
-      if (data.success) {
-        setCandidates(data.candidates);
+        if (candidatesData.success) {
+          setCandidates(candidatesData.candidates);
+        }
+        if (employersData.success) {
+          setEmployers(employersData.employers);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    }finally {
-      setLoading(false);
     }
-  }
 
-  loadCandidates();
-}, []);
+    loadData();
+  }, []);
+
+  const paidUsers = candidates.filter(
+    (c) => c.user?.payments?.some((p: any) => p.status === "SUCCESS")
+  ).length;
+
+  const unpaidUsers = candidates.length - paidUsers;
+  const totalUsers = candidates.length + employers.length;
 
   return (
     <div >
 
-      
+
 
       <main className="mx-auto max-w-7xl px-6 py-8">
 
@@ -57,38 +74,41 @@ const [loading, setLoading] = useState(true);
 
 
           <Card
-  title="Candidates"
-  value={loading ? "..." : candidates.length.toString()}
-  icon={<Users className="h-7 w-7" />}
-/>
+            title="Total Users"
+            value={loading ? "..." : totalUsers.toString()}
+            icon={<Users className="h-7 w-7" />}
+          />
 
           <Card
-title="Companies"
-value="0"
-icon={<Building2 className="h-7 w-7" />}
-/>
+            title="Paid Users"
+            value={loading ? "..." : paidUsers.toString()}
+            icon={<UserCheck className="h-7 w-7" />}
+          />
 
-<Card
-title="Jobs"
-value="0"
-icon={<BriefcaseBusiness className="h-7 w-7" />}
-/>
+          <Card
+            title="Unpaid Users"
+            value={loading ? "..." : unpaidUsers.toString()}
+            icon={<Users className="h-7 w-7" />}
+          />
 
-<Card
-title="Premium Members"
-value={
-  candidates.filter(
-    (c) => c.user.profileCompleted
-  ).length.toString()
-}
-icon={<UserCheck className="h-7 w-7" />}
-/>
+          <Card
+            title="Employers"
+            value={loading ? "..." : employers.length.toString()}
+            icon={<Building2 className="h-7 w-7" />}
+          />
 
-<Card
-title="Revenue"
-value="₹0"
-icon={<IndianRupee className="h-7 w-7" />}
-/>
+          <Card
+            title="Total Revenue"
+            value={`₹${(
+              candidates.reduce((total, c) => {
+                const payments = c.user?.payments || [];
+                const successfulPayments = payments.filter((p: any) => p.status === "SUCCESS");
+                const amount = successfulPayments.reduce((sum: number, p: any) => sum + p.amount, 0);
+                return total + amount;
+              }, 0) / 100 // Divide by 100 because Razorpay amount is in paise
+            ).toLocaleString("en-IN")}`}
+            icon={<IndianRupee className="h-7 w-7" />}
+          />
 
         </div>
 
@@ -101,72 +121,85 @@ icon={<IndianRupee className="h-7 w-7" />}
 
             <div className="mt-6 flex-1 space-y-4 overflow-y-auto pr-2">
 
-          {candidates.length === 0 ? (
-  <p className="text-zinc-500">
-    No registrations yet.
-  </p>
-) : (
-  
-  candidates.slice(0, 5).map((candidate) => (
-<div
-  key={candidate.id}
-  className="rounded-xl border p-4 transition hover:bg-zinc-50"
->
-  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              {candidates.length === 0 ? (
+                <p className="text-zinc-500">
+                  No registrations yet.
+                </p>
+              ) : (
 
-    <div className="min-w-0">
-      <p className="truncate font-semibold">
-        {candidate.user.fullName}
-      </p>
+                candidates.slice(0, 5).map((candidate) => (
+                  <div
+                    key={candidate.id}
+                    className="rounded-xl border p-4 transition hover:bg-zinc-50"
+                  >
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 
-      <p className="truncate text-sm text-zinc-500">
-        {candidate.user.email}
-      </p>
-    </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="truncate font-semibold">
+                            {candidate.user.fullName}
+                          </p>
+                          {candidate.user?.payments?.some((p: any) => p.status === "SUCCESS") ? (
+                            <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                              Paid
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                              Unpaid
+                            </span>
+                          )}
+                        </div>
 
-    <p className="text-xs text-zinc-500 sm:text-sm">
-      {new Date(candidate.createdAt).toLocaleDateString()}
-    </p>
+                        <p className="truncate text-sm text-zinc-500">
+                          {candidate.user.email}
+                        </p>
+                      </div>
 
-  </div>
-</div>  ))
-)}
+                      <p className="text-xs text-zinc-500 sm:text-sm">
+                        {new Date(candidate.createdAt).toLocaleDateString()}
+                      </p>
+
+                    </div>
+                  </div>))
+              )}
 
 
             </div>
 
-          <div className="mt-4">
-  <Link
-    href="/admin/candidates"
-    className="block w-full rounded-xl bg-zinc-900 py-3 text-center text-sm font-medium text-white hover:bg-zinc-800"
-  >
-    View All Candidates →
-  </Link>
-</div>
+            <div className="mt-4">
+              <Link
+                href="/admin/candidates"
+                className="block w-full rounded-xl bg-zinc-900 py-3 text-center text-sm font-medium text-white hover:bg-zinc-800"
+              >
+                View All Candidates →
+              </Link>
+            </div>
 
           </section>
 
-        <section className="flex h-[500px] flex-col rounded-3xl border bg-white p-6 shadow-sm">
+          <section className="flex h-[500px] flex-col rounded-3xl border bg-white p-6 shadow-sm">
 
-  <h2 className="text-xl font-semibold">
-    Quick Actions
-  </h2>
+            <h2 className="text-xl font-semibold">
+              Quick Actions
+            </h2>
 
-  <div className="mt-6 flex flex-1 flex-col gap-4">
+            <div className="mt-6 flex flex-1 flex-col gap-4">
 
-    <Link href="/admin/candidates">
-      <ActionButton text="Manage Candidates" />
-    </Link>
+              <Link href="/admin/candidates?type=paid">
+                <ActionButton text="Manage Paid Users" />
+              </Link>
 
-    <ActionButton text="Manage Jobs" />
+              <Link href="/admin/candidates?type=unpaid">
+                <ActionButton text="Manage Unpaid Users" />
+              </Link>
 
-    <ActionButton text="Manage Companies" />
+              <Link href="/admin/employers">
+                <ActionButton text="Manage Employers" />
+              </Link>
 
-    <ActionButton text="Premium Members" />
+            </div>
 
-  </div>
-
-</section>
+          </section>
 
         </div>
 

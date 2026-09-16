@@ -94,9 +94,9 @@ export async function DELETE(
       );
     }
 
-    await prisma.candidateProfile.delete({
+    await prisma.user.delete({
       where: {
-        id,
+        id: candidate.userId,
       },
     });
 

@@ -49,13 +49,11 @@ export default function CandidateProfilePage() {
   const [step, setStep] = useState(1);
   const router = useRouter();
 
-  const [hasPaid, setHasPaid] = useState(false);
-  const [paymentChecking, setPaymentChecking] =
-    useState(true);
-
   const [errors, setErrors] = useState<
     Record<string, string>
   >({});
+
+
 
   // ============================================
   // Load Existing Profile + Payment Status
@@ -133,45 +131,6 @@ export default function CandidateProfilePage() {
       }
     };
 
-    const checkPaymentStatus = async () => {
-      try {
-        const userId =
-          localStorage.getItem("userId");
-
-        if (!userId) {
-          setPaymentChecking(false);
-          return;
-        }
-
-        const response = await fetch(
-          `/api/payment/check?userId=${userId}`
-        );
-
-        const result = await response.json();
-
-        console.log(
-          "PROFILE PAYMENT CHECK:",
-          result
-        );
-
-        if (response.ok && result.success) {
-          setHasPaid(result.paid);
-        } else {
-          setHasPaid(false);
-        }
-      } catch (error) {
-        console.error(
-          "Payment status check error:",
-          error
-        );
-
-        setHasPaid(false);
-      } finally {
-        setPaymentChecking(false);
-      }
-    };
-
-    checkPaymentStatus();
     loadProfile();
   }, []);
 
@@ -402,262 +361,7 @@ export default function CandidateProfilePage() {
     );
   };
 
-  // ============================================
-  // Payment Integration
-  // ============================================
 
-  const handlePayment = async () => {
-    try {
-      const userId =
-        localStorage.getItem("userId");
-
-      if (!userId) {
-        router.push("/login");
-        return;
-      }
-
-      // Check if candidate has already paid
-      const paymentCheckResponse =
-        await fetch(
-          `/api/payment/check?userId=${userId}`
-        );
-
-      if (!paymentCheckResponse.ok) {
-        const errorText =
-          await paymentCheckResponse.text();
-
-        console.error(
-          "Payment check failed:",
-          paymentCheckResponse.status,
-          errorText
-        );
-
-        alert(
-          "Unable to check previous payment status."
-        );
-
-        return;
-      }
-
-      const paymentCheck =
-        await paymentCheckResponse.json();
-
-      // Already paid → directly save/update profile
-      if (paymentCheck.paid) {
-        await handleSubmit();
-        return;
-      }
-
-      // ==========================================
-      // Create Razorpay Order
-      // ==========================================
-
-      const orderResponse = await fetch(
-        "/api/payment/create-order",
-        {
-          method: "POST",
-        }
-      );
-
-      const orderResult =
-        await orderResponse.json();
-
-      console.log(
-        "CREATE ORDER STATUS:",
-        orderResponse.status
-      );
-
-      console.log(
-        "CREATE ORDER RESPONSE:",
-        orderResult
-      );
-
-      if (!orderResult.success) {
-        alert(
-          orderResult.message ||
-            "Unable to create payment."
-        );
-
-        return;
-      }
-
-      const order = orderResult.order;
-
-      console.log(
-        "RAZORPAY ORDER:",
-        order
-      );
-
-      // ==========================================
-      // Open Razorpay Checkout
-      // ==========================================
-
-      const options = {
-        key: process.env
-          .NEXT_PUBLIC_RAZORPAY_KEY_ID,
-
-        amount: order.amount,
-        currency: order.currency,
-
-        name: "Shiv Shakti Multi Service",
-
-        description:
-          "Candidate Registration Fee",
-
-        order_id: order.id,
-
-        handler: async function (response: {
-          razorpay_payment_id: string;
-          razorpay_order_id: string;
-          razorpay_signature: string;
-        }) {
-          try {
-            // ======================================
-            // Verify Payment
-            // ======================================
-
-            const verifyResponse =
-              await fetch(
-                "/api/payment/verify",
-                {
-                  method: "POST",
-
-                  headers: {
-                    "Content-Type":
-                      "application/json",
-                  },
-
-                  body: JSON.stringify({
-                    razorpay_order_id:
-                      response.razorpay_order_id,
-
-                    razorpay_payment_id:
-                      response.razorpay_payment_id,
-
-                    razorpay_signature:
-                      response.razorpay_signature,
-
-                    userId:
-                      localStorage.getItem(
-                        "userId"
-                      ),
-                  }),
-                }
-              );
-
-            const verifyText =
-              await verifyResponse.text();
-
-            console.log(
-              "VERIFY STATUS:",
-              verifyResponse.status
-            );
-
-            console.log(
-              "VERIFY RESPONSE:",
-              verifyText
-            );
-
-            if (!verifyResponse.ok) {
-              console.error(
-                "Payment verification API failed:",
-                verifyText
-              );
-
-              alert(
-                "Payment verification failed. Registration was not completed."
-              );
-
-              return;
-            }
-
-            let verifyResult;
-
-            try {
-              verifyResult =
-                JSON.parse(verifyText);
-            } catch (error) {
-              console.error(
-                "Verify API returned invalid JSON:",
-                verifyText
-              );
-
-              alert(
-                "Payment verification returned an invalid response."
-              );
-
-              return;
-            }
-
-            if (!verifyResult.success) {
-              alert(
-                verifyResult.message ||
-                  "Payment verification failed. Registration was not completed."
-              );
-
-              return;
-            }
-
-            // ======================================
-            // Payment Successfully Verified
-            // ======================================
-
-            setHasPaid(true);
-
-            localStorage.setItem(
-              "paymentSuccessMessage",
-              "Payment successful. Your receipt has been sent to your registered email."
-            );
-
-            // Save Profile
-            await handleSubmit();
-          } catch (error) {
-            console.error(
-              "Payment verification error:",
-              error
-            );
-
-            alert(
-              "Payment was completed, but verification failed. Please contact support."
-            );
-          }
-        },
-
-        prefill: {
-          name: fullName,
-        },
-
-        theme: {
-          color: "#18181b",
-        },
-
-        modal: {
-          ondismiss: function () {
-            console.log(
-              "Payment popup closed."
-            );
-          },
-        },
-      };
-
-      const Razorpay =
-        window.Razorpay;
-
-      const razorpay =
-        new Razorpay(options);
-
-      razorpay.open();
-    } catch (error) {
-      console.error(
-        "Payment error:",
-        error
-      );
-
-      alert(
-        "Unable to start payment. Please try again."
-      );
-    }
-  };
 
   // ============================================
   // Next Button
@@ -669,7 +373,7 @@ export default function CandidateProfilePage() {
     }
 
     if (step === 3) {
-      handlePayment();
+      handleSubmit();
       return;
     }
 
@@ -767,11 +471,6 @@ export default function CandidateProfilePage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0f10]">
-      <Script
-        src="https://checkout.razorpay.com/v1/checkout.js"
-        strategy="afterInteractive"
-      />
-
       <SiteNavbar />
 
       <main className="mx-auto flex max-w-3xl justify-center px-4 pt-28 pb-8">
@@ -877,26 +576,13 @@ export default function CandidateProfilePage() {
       <div className="hidden sm:block" />
     )}
 
-    {/* Next / Pay Now / Submit Button */}
+    {/* Next / Submit Button */}
     <button
       type="button"
       onClick={handleNext}
-      disabled={step === 3 && paymentChecking}
-      className={`flex h-11 w-full items-center justify-center rounded-xl px-6 text-sm font-semibold transition sm:w-auto sm:min-w-[140px] ${
-        step === 3 && paymentChecking
-          ? "cursor-not-allowed bg-zinc-300 text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
-          : step === 3 && !hasPaid
-          ? "bg-green-600 text-white hover:bg-green-700 active:scale-[0.98]"
-          : "bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-      }`}
+      className="flex h-11 w-full items-center justify-center rounded-xl px-6 text-sm font-semibold transition sm:w-auto sm:min-w-[140px] bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200"
     >
-      {step === 3
-        ? paymentChecking
-          ? "Checking..."
-          : hasPaid
-          ? "Submit"
-          : "Pay Now"
-        : "Next →"}
+      {step === 3 ? "Submit" : "Next →"}
     </button>
   </div>
 </div>

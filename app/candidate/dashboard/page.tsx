@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 
 import {
   ArrowRight,
@@ -9,11 +10,20 @@ import {
   ShieldCheck,
   Sparkles,
   UserRound,
+  Calendar,
+  CheckCircle2,
+  Clock
 } from "lucide-react";
 
 import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 import { InfoCard } from "@/components/dashboard/info-card";
 import { SectionCard } from "@/components/dashboard/section-card";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function CandidateDashboardPage() {
   const router = useRouter();
@@ -24,101 +34,44 @@ export default function CandidateDashboardPage() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
 
   useEffect(() => {
     const loadDashboard = async () => {
-      console.log("DASHBOARD: loading started");
-
       try {
         const userId = localStorage.getItem("userId");
 
-        console.log("DASHBOARD USER ID:", userId);
-
         if (!userId) {
-          console.log("DASHBOARD: userId not found");
           router.push("/login");
           return;
         }
 
         setAuthorized(true);
 
-        // ========================================
         // 1. LOAD CANDIDATE PROFILE
-        // ========================================
+        const profileResponse = await fetch(`/api/profile?userId=${userId}`);
+        const profileResult = await profileResponse.json();
 
-        const profileResponse = await fetch(
-          `/api/profile?userId=${userId}`
-        );
-
-        console.log(
-          "DASHBOARD PROFILE STATUS:",
-          profileResponse.status
-        );
-
-        const profileResult =
-          await profileResponse.json();
-
-        console.log(
-          "DASHBOARD PROFILE RESPONSE:",
-          profileResult
-        );
-
-        if (
-          profileResponse.ok &&
-          profileResult.success
-        ) {
+        if (profileResponse.ok && profileResult.success) {
           setProfile(profileResult.profile);
         } else {
-          console.error(
-            "PROFILE LOAD FAILED:",
-            profileResult.message
-          );
-
           setProfile(null);
         }
 
-        // ========================================
         // 2. CHECK PAYMENT STATUS
-        // ========================================
+        const paymentResponse = await fetch(`/api/payment/check?userId=${userId}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+        const paymentResult = await paymentResponse.json();
 
-        const paymentResponse = await fetch(
-          `/api/payment/check?userId=${userId}`,
-          {
-            method: "GET",
-            cache: "no-store",
-          }
-        );
-
-        console.log(
-          "DASHBOARD PAYMENT STATUS:",
-          paymentResponse.status
-        );
-
-        const paymentResult =
-          await paymentResponse.json();
-
-        console.log(
-          "DASHBOARD PAYMENT RESPONSE:",
-          paymentResult
-        );
-
-        if (
-          paymentResponse.ok &&
-          paymentResult.success &&
-          paymentResult.paid
-        ) {
-          // Payment successful
+        if (paymentResponse.ok && paymentResult.success && paymentResult.paid) {
           setPayment(paymentResult.payment);
         } else {
-          // Payment not completed
           setPayment(null);
         }
       } catch (error) {
-        console.error(
-          "DASHBOARD LOAD ERROR:",
-          error
-        );
-
+        console.error("DASHBOARD LOAD ERROR:", error);
         setPayment(null);
       } finally {
         setLoading(false);
@@ -129,15 +82,98 @@ export default function CandidateDashboardPage() {
     loadDashboard();
   }, [router]);
 
-  // ========================================
-  // LOADING
-  // ========================================
+  // ============================================
+  // Payment Integration
+  // ============================================
+  const handlePayment = async () => {
+    setPaymentProcessing(true);
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        router.push("/login");
+        return;
+      }
 
-  if (
-    loading ||
-    !authorized ||
-    paymentLoading
-  ) {
+      // Create Razorpay Order
+      const orderResponse = await fetch("/api/payment/create-order", {
+        method: "POST",
+      });
+      const orderResult = await orderResponse.json();
+
+      if (!orderResult.success) {
+        alert(orderResult.message || "Unable to create payment.");
+        setPaymentProcessing(false);
+        return;
+      }
+
+      const order = orderResult.order;
+
+      // Open Razorpay Checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Shiv Shakti Multi Service",
+        description: "Candidate Registration Fee",
+        order_id: order.id,
+        handler: async function (response: any) {
+          try {
+            // Verify Payment
+            const verifyResponse = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                userId: localStorage.getItem("userId"),
+              }),
+            });
+
+            const verifyResult = await verifyResponse.json();
+
+            if (!verifyResult.success) {
+              alert(verifyResult.message || "Payment verification failed.");
+              setPaymentProcessing(false);
+              return;
+            }
+
+            // Payment Successfully Verified
+            alert("Payment successful! Unlocking your dashboard...");
+            window.location.reload(); // Reload to fetch updated payment status
+          } catch (error) {
+            console.error("Payment verification error:", error);
+            alert("Payment was completed, but verification failed. Please contact support.");
+            setPaymentProcessing(false);
+          }
+        },
+        prefill: {
+          name: profile?.user?.fullName || "Candidate",
+        },
+        theme: {
+          color: "#18181b",
+        },
+        modal: {
+          ondismiss: function () {
+            setPaymentProcessing(false);
+          },
+        },
+      };
+
+      const Razorpay = window.Razorpay;
+      const razorpay = new Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("Unable to start payment. Please try again.");
+      setPaymentProcessing(false);
+    }
+  };
+
+
+  if (loading || !authorized || paymentLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center text-lg font-medium">
         Loading...
@@ -145,334 +181,145 @@ export default function CandidateDashboardPage() {
     );
   }
 
-  const fullName =
-    profile?.user?.fullName || "Candidate";
-
-  const jobField =
-    profile?.preferredJobField || "Not Added";
-
-  const profileStatus =
-    profile?.user?.profileCompleted
-      ? "Completed"
-      : "Incomplete";
+  const fullName = profile?.user?.fullName || "Candidate";
+  const jobField = profile?.preferredJobField || "Not Added";
+  const profileStatus = profile?.user?.profileCompleted ? "Completed" : "Incomplete";
+  const isPaid = payment?.status === "SUCCESS";
 
   return (
     <div className="min-h-screen bg-zinc-50">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
       <DashboardNav />
 
       <main className="mx-auto max-w-7xl px-6 py-8">
-
+        
         {/* ========================================
-            PAYMENT SUCCESS MESSAGE
+            UNPAID VIEW (PAYMENT WALL)
         ======================================== */}
-
-        {payment?.status === "SUCCESS" && (
-          <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4">
-
-            <div className="flex items-start gap-3">
-
-              {/* Check Icon */}
-              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-sm font-bold text-white">
-                ✓
-              </div>
-
-              <div className="min-w-0">
-
-                <p className="font-semibold text-emerald-800">
-                  Payment Successful
-                </p>
-
-                <p className="mt-1 text-sm leading-6 text-emerald-700">
-                  Your registration payment has been
-                  successfully verified. Please check
-                  your registered email for the payment
-                  receipt.
-                </p>
-
-                {/* Receipt Number */}
-                {payment.receiptNumber && (
-                  <div className="mt-3 inline-flex items-center rounded-lg border border-emerald-200 bg-white px-3 py-2">
-                    <span className="text-xs font-medium text-zinc-500">
-                      Receipt No.
-                    </span>
-
-                    <span className="ml-2 text-sm font-semibold text-zinc-900">
-                      {payment.receiptNumber}
-                    </span>
-                  </div>
-                )}
-
-              </div>
-
+        {!isPaid && (
+          <div className="flex flex-col items-center justify-center rounded-3xl bg-white px-6 py-24 text-center shadow-sm border border-zinc-200">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-orange-100 text-orange-600 mb-6">
+              <BriefcaseBusiness className="h-10 w-10" />
+            </div>
+            <h1 className="text-3xl font-bold sm:text-4xl text-zinc-900">Unlock Job Opportunities</h1>
+            <p className="mt-4 max-w-xl text-lg text-zinc-500">
+              Your profile is complete! To start receiving interview calls and direct HR referrals for <strong className="text-zinc-800">{jobField}</strong>, please complete your registration payment.
+            </p>
+            
+            <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
+              <button 
+                onClick={handlePayment} 
+                disabled={paymentProcessing}
+                className="w-full sm:w-auto rounded-xl bg-green-600 px-8 py-4 font-bold text-white text-lg hover:bg-green-700 transition active:scale-95 disabled:opacity-70"
+              >
+                {paymentProcessing ? "Processing..." : "Pay ₹399 Now"}
+              </button>
+              
+              <a 
+                href="https://wa.me/91XXXXXXXXXX" 
+                target="_blank" 
+                className="w-full sm:w-auto rounded-xl bg-zinc-900 px-8 py-4 font-bold text-white text-lg hover:bg-zinc-800 transition active:scale-95"
+              >
+                Have a doubt? Contact Us
+              </a>
             </div>
           </div>
         )}
 
         {/* ========================================
-            WELCOME SECTION
+            PAID VIEW (FULL DASHBOARD)
         ======================================== */}
-
-        <SectionCard className="bg-zinc-950 text-white">
-
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-
-            <div>
-
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-widest">
-
-                <Sparkles size={14} />
-
-                Candidate Portal
-
+        {isPaid && (
+          <>
+            <SectionCard className="bg-zinc-950 text-white">
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-widest">
+                    <Sparkles size={14} />
+                    Premium Candidate
+                  </div>
+                  <h1 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">
+                    Welcome back, {fullName} 👋
+                  </h1>
+                  <p className="mt-3 text-zinc-300">
+                    Track your recruitment progress and upcoming interviews.
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white/10 p-5">
+                  <p className="text-sm">Current Status</p>
+                  <p className="mt-2 text-xl font-bold sm:text-2xl text-green-400">
+                    {profile?.status || "Applied"}
+                  </p>
+                </div>
               </div>
+            </SectionCard>
 
-              <h1 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">
-                Welcome back, {fullName} 👋
-              </h1>
-
-              <p className="mt-3 text-zinc-300">
-                Manage your profile and track your
-                recruitment progress.
-              </p>
-
+            {/* Dashboard Stats */}
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <InfoCard label="Preferred Job Field" value={jobField} />
+              <InfoCard label="Total Interviews" value="0" />
+              <InfoCard label="Scheduled Interviews" value="0" />
+              <InfoCard label="City" value={profile?.city || "Not Added"} />
             </div>
 
-            <div className="rounded-2xl bg-white/10 p-5">
-
-              <p className="text-sm">
-                Profile Status
-              </p>
-
-              <p className="mt-2 text-xl font-bold sm:text-2xl">
-                {profileStatus}
-              </p>
-
-            </div>
-
-          </div>
-
-        </SectionCard>
-
-        {/* ========================================
-            INFO CARDS
-        ======================================== */}
-
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
-          <InfoCard
-            label="Preferred Job Field"
-            value={jobField}
-          />
-
-          <InfoCard
-            label="City"
-            value={profile?.city || "Not Added"}
-          />
-
-          <InfoCard
-            label="State"
-            value={profile?.state || "Not Added"}
-          />
-
-        </div>
-
-        {/* ========================================
-            MAIN DASHBOARD
-        ======================================== */}
-
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-
-          {/* ========================================
-              PROFILE OVERVIEW
-          ======================================== */}
-
-          <SectionCard
-            title="Profile Overview"
-            description={
-              <>
-                Your information saved in Shiv Shakti
-                Multi Service.
-              </>
-            }
-          >
-
-            <div className="space-y-4">
-
-              {/* Full Name */}
-
-              <div className="flex items-center gap-3 rounded-xl border p-4">
-
-                <UserRound className="h-5 w-5 text-zinc-600" />
-
-                <div>
-
-                  <p className="text-sm text-zinc-500">
-                    Full Name
-                  </p>
-
-                  <p className="font-semibold">
-                    {fullName}
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Skills */}
-
-              <div className="flex items-center gap-3 rounded-xl border p-4">
-
-                <BriefcaseBusiness className="h-5 w-5 text-zinc-600" />
-
-                <div>
-
-                  <p className="text-sm text-zinc-500">
-                    Skills
-                  </p>
-
-                  <p className="font-semibold">
-                    {profile?.skills || "Not Added"}
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Qualification */}
-
-              <div className="flex items-center gap-3 rounded-xl border p-4">
-
-                <ShieldCheck className="h-5 w-5 text-zinc-600" />
-
-                <div>
-
-                  <p className="text-sm text-zinc-500">
-                    Qualification
-                  </p>
-
-                  <p className="font-semibold">
-                    {profile?.highestQualification ||
-                      "Not Added"}
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Experience */}
-
-              <div className="flex items-center gap-3 rounded-xl border p-4">
-
-                <BriefcaseBusiness className="h-5 w-5 text-zinc-600" />
-
-                <div>
-
-                  <p className="text-sm text-zinc-500">
-                    Experience
-                  </p>
-
-                  <p className="font-semibold">
-                    {profile?.experience ||
-                      "Not Added"}
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Preferred Job Field */}
-
-              <div className="flex items-center gap-3 rounded-xl border p-4">
-
-                <BriefcaseBusiness className="h-5 w-5 text-zinc-600" />
-
-                <div>
-
-                  <p className="text-sm text-zinc-500">
-                    Preferred Job Field
-                  </p>
-
-                  <p className="font-semibold">
-                    {profile?.preferredJobField ||
-                      "Not Added"}
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Location */}
-
-              <div className="flex items-center gap-3 rounded-xl border p-4">
-
-                <UserRound className="h-5 w-5 text-zinc-600" />
-
-                <div>
-
-                  <p className="text-sm text-zinc-500">
-                    Location
-                  </p>
-
-                  <p className="font-semibold">
-                    {profile?.city || "Not Added"},{" "}
-                    {profile?.state || "Not Added"}
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </SectionCard>
-
-          {/* ========================================
-              QUICK ACTIONS
-          ======================================== */}
-
-          <SectionCard
-            title="Quick Actions"
-            description={
-              <>
-                Manage your Shiv Shakti Multi Service
-                account.
-              </>
-            }
-          >
-
-            <div className="space-y-4">
-
-              <button
-                onClick={() =>
-                  router.push(
-                    "/candidate/profile"
-                  )
-                }
-                className="flex w-full items-center justify-between rounded-xl border p-4 transition hover:bg-zinc-100"
+            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+              
+              {/* INTERVIEW SCHEDULE */}
+              <SectionCard
+                title="Interview Schedule"
+                description={<>Your upcoming job interviews.</>}
               >
+                <div className="flex flex-col items-center justify-center py-10 text-center text-zinc-500">
+                   <Calendar className="h-12 w-12 text-zinc-300 mb-3" />
+                   <p>No interviews scheduled yet.</p>
+                   <p className="text-sm">We will notify you when an employer shortlists your profile.</p>
+                </div>
+              </SectionCard>
 
-                <div className="text-left">
+              {/* PROFILE OVERVIEW */}
+              <SectionCard
+                title="Profile Overview"
+                description={<>Your information saved in Shiv Shakti Multi Service.</>}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 rounded-xl border p-4">
+                    <UserRound className="h-5 w-5 text-zinc-600" />
+                    <div>
+                      <p className="text-sm text-zinc-500">Full Name</p>
+                      <p className="font-semibold">{fullName}</p>
+                    </div>
+                  </div>
 
-                  <p className="font-semibold">
-                    Edit Profile
-                  </p>
+                  <div className="flex items-center gap-3 rounded-xl border p-4">
+                    <BriefcaseBusiness className="h-5 w-5 text-zinc-600" />
+                    <div>
+                      <p className="text-sm text-zinc-500">Experience</p>
+                      <p className="font-semibold">{profile?.experience || "Not Added"}</p>
+                    </div>
+                  </div>
 
-                  <p className="text-sm text-zinc-500">
-                    Update your profile information
-                  </p>
-
+                  <div className="flex items-center gap-3 rounded-xl border p-4">
+                    <CheckCircle2 className="h-5 w-5 text-zinc-600" />
+                    <div>
+                      <p className="text-sm text-zinc-500">Skills</p>
+                      <p className="font-semibold">{profile?.skills || "Not Added"}</p>
+                    </div>
+                  </div>
                 </div>
 
-                <ArrowRight />
-
-              </button>
+                <div className="mt-6">
+                  <button
+                    onClick={() => router.push("/candidate/profile")}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white p-4 font-semibold hover:bg-zinc-50 transition"
+                  >
+                    Edit Profile Details
+                  </button>
+                </div>
+              </SectionCard>
 
             </div>
-
-          </SectionCard>
-
-        </div>
-
+          </>
+        )}
       </main>
     </div>
   );
