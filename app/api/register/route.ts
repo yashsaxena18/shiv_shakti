@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { generateToken } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 const registerSchema = z.object({
   fullName: z.string().min(2),
@@ -45,7 +47,7 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         fullName,
         email,
@@ -53,9 +55,29 @@ export async function POST(request: Request) {
       },
     });
 
+    const token = generateToken({
+      id: user.id,
+      role: user.role,
+    });
+
+    (await cookies()).set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
+    });
+
     return NextResponse.json({
       success: true,
-      message: "Account created successfully.",
+      message: "Account created and logged in successfully.",
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        profileCompleted: user.profileCompleted,
+      },
     });
   } catch(error) {
     console.error("API Error:",error);

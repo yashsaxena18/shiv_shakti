@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
+import Link from "next/link";
 
 import {
   ArrowRight,
@@ -223,13 +224,12 @@ export default function CandidateDashboardPage() {
                 {paymentProcessing ? "Processing..." : "Pay ₹399 Now"}
               </button>
               
-              <a 
-                href="https://wa.me/91XXXXXXXXXX" 
-                target="_blank" 
-                className="w-full sm:w-auto rounded-xl bg-zinc-900 px-8 py-4 font-bold text-white text-lg hover:bg-zinc-800 transition active:scale-95"
+              <Link 
+                href="/#contact"
+                className="w-full sm:w-auto text-center rounded-xl bg-zinc-900 px-8 py-4 font-bold text-white text-lg hover:bg-zinc-800 transition active:scale-95"
               >
                 Have a doubt? Contact Us
-              </a>
+              </Link>
             </div>
           </div>
         )}

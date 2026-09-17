@@ -86,7 +86,11 @@ export default function EmployerRegisterPage() {
         return;
       }
 
-      router.push("/employer/login?registered=true");
+      localStorage.setItem("userId", result.user.id);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      window.dispatchEvent(new Event("storage"));
+
+      router.push("/employer/dashboard");
     } catch (error) {
       console.error(error);
       setErrors({ email: "Something went wrong. Please try again." });

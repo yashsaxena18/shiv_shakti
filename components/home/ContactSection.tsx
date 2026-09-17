@@ -8,6 +8,7 @@ import {
     Send,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function ContactSection() {
     const [formData, setFormData] = useState({
@@ -27,15 +28,39 @@ export default function ContactSection() {
         }));
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        /*
-         * Contact form submission can be connected to an API/email
-         * service later. For now this prevents the page from
-         * refreshing and keeps the redesigned form functional as UI.
-         */
-        console.log("Contact form:", formData);
+        if (!formData.name || !formData.email || !formData.phone || !formData.message) {
+            toast.error("Please fill in all fields");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                toast.error(result.message || "Failed to send message");
+                return;
+            }
+
+            toast.success("Message sent successfully!");
+            setFormData({ name: "", email: "", phone: "", message: "" });
+        } catch (error) {
+            console.error(error);
+            toast.error("An error occurred. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -759,6 +784,7 @@ export default function ContactSection() {
 
                             <button
                                 type="submit"
+                                disabled={loading}
                                 className="
                   group
                   inline-flex
@@ -780,22 +806,26 @@ export default function ContactSection() {
                   hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)]
                   active:translate-y-0
                   active:shadow-none
+                  disabled:opacity-70
+                  disabled:cursor-not-allowed
                   dark:bg-white
                   dark:text-black
                   dark:hover:bg-zinc-200
                 "
                             >
-                                Send Message
+                                {loading ? "Sending..." : "Send Message"}
 
-                                <Send
-                                    size={16}
-                                    strokeWidth={2}
-                                    className="
-                    transition-transform
-                    duration-300
-                    group-hover:translate-x-1
-                  "
-                                />
+                                {!loading && (
+                                    <Send
+                                        size={16}
+                                        strokeWidth={2}
+                                        className="
+                        transition-transform
+                        duration-300
+                        group-hover:translate-x-1
+                      "
+                                    />
+                                )}
                             </button>
 
                             <p

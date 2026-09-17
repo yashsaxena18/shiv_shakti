@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { generateToken } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 const registerSchema = z.object({
   employerName: z.string().min(2, "Employer name is required"),
@@ -56,8 +58,8 @@ export async function POST(request: Request) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Atomic transaction for creating User and EmployerProfile
-    await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
+    const user = await prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
         data: {
           fullName: employerName, // Still storing for base user info
           email,
@@ -68,7 +70,7 @@ export async function POST(request: Request) {
 
       await tx.employerProfile.create({
         data: {
-          userId: user.id,
+          userId: newUser.id,
           employerName,
           companyName,
           phone,
@@ -80,11 +82,33 @@ export async function POST(request: Request) {
           status: "PENDING", // By default as per schema, explicitly setting it for clarity
         },
       });
+
+      return newUser;
+    });
+
+    const token = generateToken({
+      id: user.id,
+      role: user.role,
+    });
+
+    (await cookies()).set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
     });
 
     return NextResponse.json({
       success: true,
-      message: "Employer account created successfully.",
+      message: "Employer account created and logged in successfully.",
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        profileCompleted: user.profileCompleted,
+      },
     });
   } catch (error) {
     console.error("API Error (Employer Register):", error);

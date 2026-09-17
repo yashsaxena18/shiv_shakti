@@ -71,7 +71,11 @@ export default function RegisterPage() {
         return;
       }
 
-      router.push("/login");
+      localStorage.setItem("userId", result.user.id);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      window.dispatchEvent(new Event("storage"));
+
+      router.push("/candidate/profile");
     } catch (error) {
       console.error(error);
       setErrors((current) => ({
