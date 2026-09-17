@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: result.error.errors[0].message || "Please enter valid information.",
+          message: result.error.issues?.[0]?.message || "Please enter valid information.",
         },
         { status: 400 }
       );

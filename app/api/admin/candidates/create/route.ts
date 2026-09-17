@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: result.error.errors[0].message || "Invalid information provided.",
+          message: result.error.issues?.[0]?.message || "Invalid information provided.",
         },
         { status: 400 }
       );
