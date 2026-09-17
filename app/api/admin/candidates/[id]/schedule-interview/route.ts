@@ -14,9 +14,9 @@ export async function POST(
 
     const { id: candidateId } = await params;
     const body = await req.json();
-    const { companyName, date, time, location } = body;
+    const { companyName, designation, date, time, location } = body;
 
-    if (!companyName || !date || !time || !location) {
+    if (!companyName || !designation || !date || !time || !location) {
       return NextResponse.json(
         { success: false, message: "All interview fields are required." },
         { status: 400 }
@@ -41,6 +41,7 @@ export async function POST(
       data: {
         candidateId: candidate.id,
         companyName,
+        designation,
         date: new Date(date),
         time,
         location,
@@ -66,22 +67,34 @@ export async function POST(
       await resend.emails.send({
         from: "onboarding@resend.dev",
         to: candidate.user.email,
-        subject: `Interview Scheduled: ${companyName}`,
+        subject: `✨ INTERVIEW INVITATION: ${companyName}`,
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-            <h2 style="color: #333; text-align: center;">Interview Scheduled</h2>
-            <p>Dear <strong>${candidate.user.fullName}</strong>,</p>
-            <p>We are excited to inform you that an interview has been scheduled for your profile!</p>
-            
-            <div style="background-color: #f9fafb; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <p style="margin: 5px 0;"><strong>Company:</strong> ${companyName}</p>
-              <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date(date).toLocaleDateString('en-IN')}</p>
-              <p style="margin: 5px 0;"><strong>Time:</strong> ${time}</p>
-              <p style="margin: 5px 0;"><strong>Location/Link:</strong> ${location}</p>
-            </div>
-            
-            <p>Please ensure you are prepared and arrive/join on time.</p>
-            <p>Best Regards,<br/><strong>Shiv Shakti Multi Service</strong></p>
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.6; color: #333;">
+            <p>✨ <strong>INTERVIEW INVITATION</strong></p>
+
+            <p>Dear Candidate,</p>
+
+            <p>Greetings from Shiv Shakti Multi Service.</p>
+
+            <p>We are pleased to inform you that your interview has been officially scheduled with <strong>${companyName}</strong>. Kindly find the interview details below:</p>
+
+            <p>━━━━━━━━━━━━━━━━━━<br/>
+            🏢 <strong>Company:</strong> ${companyName}<br/>
+            💼 <strong>Designation:</strong> ${designation}<br/>
+            📅 <strong>Date:</strong> ${new Date(date).toLocaleDateString('en-IN')}<br/>
+            ⏰ <strong>Time:</strong> ${time}<br/>
+            📍 <strong>Location:</strong> ${location}<br/>
+            ━━━━━━━━━━━━━━━━━━</p>
+
+            <p><strong>Important:</strong><br/>
+            Please arrive 10–15 minutes before the scheduled time and come prepared with the necessary documents and a copy of your updated resume.</p>
+
+            <p>We wish you success in your interview and look forward to your presence.<br/>
+            Please Provide Rating : Link </p>
+
+            <p>Warm Regards,<br/>
+            <strong>Shiv Shakti Multi Service</strong><br/>
+            <span style="color: #666; font-size: 0.9em;">Recruitment • Placement • Multi Services</span></p>
           </div>
         `,
       });

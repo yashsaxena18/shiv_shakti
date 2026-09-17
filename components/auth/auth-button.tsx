@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 type AuthButtonProps = {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ export function AuthButton({
   onClick,
 }: AuthButtonProps) {
   const base =
-    "flex h-12 w-full items-center justify-center rounded-xl px-5 text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-zinc-300 disabled:cursor-not-allowed disabled:opacity-70 active:scale-[0.98]";
+    "flex h-12 w-full items-center justify-center rounded-xl px-5 text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-zinc-300 disabled:opacity-70 active:scale-[0.98] cursor-pointer disabled:cursor-pointer";
 
   const styles =
     variant === "primary"
@@ -30,7 +31,14 @@ export function AuthButton({
       disabled={loading}
       className={cn(base, styles)}
     >
-      {loading ? "Please wait..." : children}
+      {loading ? (
+        <span className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Submitting...
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 }

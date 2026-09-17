@@ -33,11 +33,34 @@ function CandidatesContent() {
   const [schedulingFor, setSchedulingFor] = useState<any>(null);
   const [interviewForm, setInterviewForm] = useState({
     companyName: "",
+    designation: "",
     date: "",
     time: "",
     location: "",
   });
   const [schedulingProcess, setSchedulingProcess] = useState(false);
+
+  // Manual Add Candidate State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addForm, setAddForm] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    selectedJobField: "",
+    preferredJobField: "",
+    experience: "",
+    city: "",
+  });
+  const [isAdding, setIsAdding] = useState(false);
+
+  // Online Pay State
+  const [onlinePayFor, setOnlinePayFor] = useState<any>(null);
+  const [onlinePayForm, setOnlinePayForm] = useState({
+    amount: "499",
+    link: "",
+  });
+  const [linkSentData, setLinkSentData] = useState<Record<string, number>>({});
+  const [confirmingPayment, setConfirmingPayment] = useState<string | null>(null);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -261,7 +284,7 @@ function CandidatesContent() {
   };
 
   const markAsPaidCash = async (id: string) => {
-    const amountStr = window.prompt("Enter payment amount (e.g., 499 or 799):", "399");
+    const amountStr = window.prompt("Enter payment amount (e.g., 499 or 799):", "499");
     if (!amountStr) return;
 
     const amount = Number(amountStr);
@@ -291,6 +314,39 @@ function CandidatesContent() {
       if (response.ok && result.success) {
         await loadCandidates();
         toast.success("Candidate marked as paid via Cash.");
+
+        if (result.receiptDetails) {
+          const rd = result.receiptDetails;
+          const waText = `Payment Receipt
+
+Dear ${rd.candidateName},
+
+We are pleased to confirm that your payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.
+
+Payment Details
+
+Amount Paid: ₹${rd.amount}
+Payment Method: Cash
+Receipt ID: ${rd.receiptNumber}
+Payment Date: ${rd.dateStr}
+Service: Premium Candidate
+
+Your payment has been recorded successfully, and your Premium Candidate service is now active.
+
+⭐ We Value Your Feedback
+
+We would love to hear about your experience with Shiv Shakti Multi Service.
+
+👉 [Leave a Review]
+
+Thank you for choosing Shiv Shakti Multi Service.
+
+Warm Regards,
+Shiv Shakti Multi Service
+Recruitment & Placement Services`;
+
+          window.open(`https://wa.me/91${rd.phone}?text=${encodeURIComponent(waText)}`, "_blank");
+        }
       } else {
         toast.error(result.message || "Unable to update payment.");
       }
@@ -324,13 +380,38 @@ function CandidatesContent() {
       if (response.ok && result.success) {
         toast.success("Interview scheduled & Email sent!");
         
+        // Format the new WhatsApp message
+        const waText = `✨ INTERVIEW INVITATION
+
+Dear Candidate,
+
+Greetings from Shiv Shakti Multi Service.
+
+We are pleased to inform you that your interview has been officially scheduled with ${interviewForm.companyName}. Kindly find the interview details below:
+
+━━━━━━━━━━━━━━━━━━
+🏢 Company: ${interviewForm.companyName}
+💼 Designation: ${interviewForm.designation}
+📅 Date: ${interviewForm.date}
+⏰ Time: ${interviewForm.time}
+📍 Location: ${interviewForm.location}
+━━━━━━━━━━━━━━━━━━
+
+Important:
+Please arrive 10–15 minutes before the scheduled time and come prepared with the necessary documents and a copy of your updated resume.
+
+We wish you success in your interview and look forward to your presence.
+Please Provide Rating : Link 
+
+Warm Regards,
+Shiv Shakti Multi Service
+Recruitment • Placement • Multi Services`;
+
         // Open WhatsApp automatically with pre-filled message
-        const waMessage = `Hello ${schedulingFor.user.fullName},%0A%0AWe are pleased to inform you that your interview is scheduled!%0A%0A*Company:* ${interviewForm.companyName}%0A*Date:* ${interviewForm.date}%0A*Time:* ${interviewForm.time}%0A*Location/Link:* ${interviewForm.location}%0A%0APlease be prepared and on time.%0A%0ARegards,%0AShiv Shakti Multi Service`;
-        
-        window.open(`https://wa.me/91${schedulingFor.phone}?text=${waMessage}`, "_blank");
+        window.open(`https://wa.me/91${schedulingFor.phone}?text=${encodeURIComponent(waText)}`, "_blank");
         
         setSchedulingFor(null);
-        setInterviewForm({ companyName: "", date: "", time: "", location: "" });
+        setInterviewForm({ companyName: "", designation: "", date: "", time: "", location: "" });
       } else {
         toast.error(result.message || "Unable to schedule interview.");
       }
@@ -342,9 +423,149 @@ function CandidatesContent() {
     }
   };
 
-  const getCategoryLabel = (category?: string) => {
-  return category || "-";
-};
+  const handleAddCandidate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!addForm.fullName || !addForm.phone || !addForm.email || !addForm.selectedJobField || !addForm.preferredJobField || !addForm.experience || !addForm.city) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    setIsAdding(true);
+    try {
+      const response = await fetch("/api/admin/candidates/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(addForm),
+      });
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        toast.success("Candidate added successfully!");
+        setIsAddModalOpen(false);
+        setAddForm({ fullName: "", phone: "", email: "", selectedJobField: "", preferredJobField: "", experience: "", city: "" });
+        await loadCandidates();
+      } else {
+        toast.error(result.message || "Unable to add candidate.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while adding candidate.");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleOnlinePaySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!onlinePayFor) return;
+
+    if (!onlinePayForm.amount || !onlinePayForm.link) {
+      toast.error("Please fill in both amount and link.");
+      return;
+    }
+
+    const waText = `Payment Request
+
+Dear ${onlinePayFor.user?.fullName || "Candidate"},
+
+We are pleased to inform you that your profile has been processed. To proceed further, please complete your online payment of ₹${onlinePayForm.amount}.
+
+👉 Click here to pay securely via Razorpay:
+${onlinePayForm.link}
+
+Please note: Once the payment is completed, kindly share a screenshot of the payment receipt here for confirmation.
+
+Warm Regards,
+Shiv Shakti Multi Service
+Recruitment & Placement Services`;
+
+    window.open(`https://wa.me/91${onlinePayFor.phone}?text=${encodeURIComponent(waText)}`, "_blank");
+    
+    setLinkSentData(prev => ({ ...prev, [onlinePayFor.id]: Number(onlinePayForm.amount) }));
+    setOnlinePayFor(null);
+    setOnlinePayForm({ amount: "499", link: "" });
+  };
+
+  const confirmOnlinePayment = async (id: string, amountToConfirm: number) => {
+    setConfirmingPayment(id);
+    try {
+      const response = await fetch(`/api/admin/candidates/${id}/mark-paid-online`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: amountToConfirm }),
+      });
+
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response.");
+        return;
+      }
+
+      if (response.ok && result.success) {
+        await loadCandidates();
+        toast.success("Candidate marked as paid via Online.");
+
+        if (result.receiptDetails) {
+          const rd = result.receiptDetails;
+          const waText = `Online Payment Receipt
+
+Dear ${rd.candidateName},
+
+We are pleased to confirm that your online payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.
+
+Payment Details
+
+Amount Paid: ₹${rd.amount}
+Payment Method: Online
+Receipt ID: ${rd.receiptNumber}
+Payment Date: ${rd.dateStr}
+Service: Premium Candidate
+
+Your payment has been recorded successfully, and your Premium Candidate service is now active.
+
+⭐ We Value Your Feedback
+
+We would love to hear about your experience with Shiv Shakti Multi Service.
+
+👉 [Leave a Review]
+
+Thank you for choosing Shiv Shakti Multi Service.
+
+Warm Regards,
+Shiv Shakti Multi Service
+Recruitment & Placement Services`;
+
+          window.open(`https://wa.me/91${rd.phone}?text=${encodeURIComponent(waText)}`, "_blank");
+        }
+      } else {
+        toast.error(result.message || "Unable to confirm online payment.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong.");
+    } finally {
+      setConfirmingPayment(null);
+    }
+  };
+
+  const getCategoryLabel = (selectedJobField?: string, preferredJobField?: string) => {
+    const field = selectedJobField || preferredJobField;
+    if (field) {
+      if (jobCategories[field as keyof typeof jobCategories]) {
+        return field;
+      }
+      const category = Object.entries(jobCategories).find(([, jobs]) =>
+        jobs.includes(field)
+      );
+      if (category) return category[0];
+    }
+    return "-";
+  };
 
   const availableJobFields =
     jobCategoryFilter === "All"
@@ -364,6 +585,14 @@ function CandidatesContent() {
           <h1 className="text-2xl font-bold sm:text-3xl">
             {typeParam === "paid" ? "Paid Candidates" : typeParam === "unpaid" ? "Unpaid Candidates" : "All Candidates"}
           </h1>
+          {typeParam !== "paid" && (
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="rounded-xl bg-black px-4 py-2 font-bold text-white transition hover:bg-zinc-800"
+            >
+              + Add Candidate
+            </button>
+          )}
         </div>
       </header>
 
@@ -663,12 +892,31 @@ function CandidatesContent() {
                             <td className="p-4">
                               <div className="flex gap-2">
                                 {!candidate.user?.payments?.some((p: any) => p.status === "SUCCESS") && (
-                                  <button
-                                    onClick={() => markAsPaidCash(candidate.id)}
-                                    className="rounded bg-green-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700"
-                                  >
-                                    Mark Paid (Cash)
-                                  </button>
+                                  <>
+                                    <button
+                                      onClick={() => markAsPaidCash(candidate.id)}
+                                      className="rounded bg-green-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700"
+                                    >
+                                      Mark Paid (Cash)
+                                    </button>
+                                    
+                                    {linkSentData[candidate.id] ? (
+                                      <button
+                                        onClick={() => confirmOnlinePayment(candidate.id, linkSentData[candidate.id])}
+                                        disabled={confirmingPayment === candidate.id}
+                                        className="rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
+                                      >
+                                        {confirmingPayment === candidate.id ? "Confirming..." : "Confirm Payment"}
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={() => setOnlinePayFor(candidate)}
+                                        className="rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-700"
+                                      >
+                                        Fees (Online Pay)
+                                      </button>
+                                    )}
+                                  </>
                                 )}
 
                                 <button
@@ -860,12 +1108,31 @@ function CandidatesContent() {
 
                       <div className="mt-5 grid grid-cols-2 gap-2">
                         {!candidate.user?.payments?.some((p: any) => p.status === "SUCCESS") && (
-                          <button
-                            onClick={() => markAsPaidCash(candidate.id)}
-                            className="col-span-2 rounded-xl bg-green-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-green-700"
-                          >
-                            Mark Paid (Cash)
-                          </button>
+                          <>
+                            <button
+                              onClick={() => markAsPaidCash(candidate.id)}
+                              className="col-span-1 rounded-xl bg-green-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-green-700"
+                            >
+                              Mark Paid (Cash)
+                            </button>
+                            
+                            {linkSentData[candidate.id] ? (
+                              <button
+                                onClick={() => confirmOnlinePayment(candidate.id, linkSentData[candidate.id])}
+                                disabled={confirmingPayment === candidate.id}
+                                className="col-span-1 rounded-xl bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
+                              >
+                                {confirmingPayment === candidate.id ? "Confirming..." : "Confirm Payment"}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => setOnlinePayFor(candidate)}
+                                className="col-span-1 rounded-xl bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700"
+                              >
+                                Fees (Online Pay)
+                              </button>
+                            )}
+                          </>
                         )}
                         
                         <button
@@ -1061,6 +1328,176 @@ function CandidatesContent() {
                 className="mt-6 w-full rounded-xl bg-zinc-900 py-3 text-center font-bold text-white transition hover:bg-zinc-800 disabled:opacity-70"
               >
                 {schedulingProcess ? "Scheduling & Sending..." : "Schedule & Send Email + WA"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD CANDIDATE MODAL */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Add Candidate</h2>
+              <button onClick={() => setIsAddModalOpen(false)} className="rounded-full p-1 hover:bg-zinc-100">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddCandidate} className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={addForm.fullName}
+                  onChange={(e) => setAddForm({ ...addForm, fullName: e.target.value })}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-black"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Phone Number *</label>
+                <input
+                  type="text"
+                  required
+                  value={addForm.phone}
+                  onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-black"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Email *</label>
+                <input
+                  type="email"
+                  required
+                  value={addForm.email}
+                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                  placeholder="you@example.com"
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-black"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Experience *</label>
+                <select
+                  required
+                  value={addForm.experience}
+                  onChange={(e) => setAddForm({ ...addForm, experience: e.target.value })}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-black"
+                >
+                  <option value="">Select Experience</option>
+                  <option value="Fresher">Fresher</option>
+                  <option value="Experienced">Experienced</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">City *</label>
+                <input
+                  type="text"
+                  required
+                  value={addForm.city}
+                  onChange={(e) => setAddForm({ ...addForm, city: e.target.value })}
+                  placeholder="e.g. Haridwar"
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-black"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Job Category *</label>
+                <select
+                  required
+                  value={addForm.selectedJobField}
+                  onChange={(e) => setAddForm({ ...addForm, selectedJobField: e.target.value, preferredJobField: "" })}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-black"
+                >
+                  <option value="">Select Category</option>
+                  {Object.keys(jobCategories).map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Preferred Job *</label>
+                <select
+                  required
+                  disabled={!addForm.selectedJobField}
+                  value={addForm.preferredJobField}
+                  onChange={(e) => setAddForm({ ...addForm, preferredJobField: e.target.value })}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-black"
+                >
+                  <option value="">Select Job</option>
+                  {addForm.selectedJobField && jobCategories[addForm.selectedJobField as keyof typeof jobCategories]?.map((job) => (
+                    <option key={job} value={job}>{job}</option>
+                  ))}
+                </select>
+              </div>
+
+              <p className="text-xs text-zinc-500">
+                Default password will be set to: <strong>00000000</strong>
+              </p>
+
+              <button
+                type="submit"
+                disabled={isAdding}
+                className="mt-4 w-full rounded-xl bg-black py-3 font-bold text-white transition hover:bg-zinc-800 disabled:opacity-70"
+              >
+                {isAdding ? "Adding..." : "Add Candidate"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ONLINE PAY MODAL */}
+      {onlinePayFor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Send Payment Link</h2>
+              <button onClick={() => setOnlinePayFor(null)} className="rounded-full p-1 hover:bg-zinc-100">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <p className="mb-4 text-sm text-zinc-500">
+              Sending payment link to <strong>{onlinePayFor.user?.fullName}</strong>.
+            </p>
+
+            <form onSubmit={handleOnlinePaySubmit} className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Amount (₹) *</label>
+                <input
+                  type="text"
+                  required
+                  value={onlinePayForm.amount}
+                  onChange={(e) => setOnlinePayForm({ ...onlinePayForm, amount: e.target.value })}
+                  placeholder="e.g. 499"
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-indigo-600"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">Razorpay Link *</label>
+                <input
+                  type="url"
+                  required
+                  value={onlinePayForm.link}
+                  onChange={(e) => setOnlinePayForm({ ...onlinePayForm, link: e.target.value })}
+                  placeholder="https://rzp.io/..."
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-indigo-600"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="mt-4 w-full rounded-xl bg-indigo-600 py-3 font-bold text-white transition hover:bg-indigo-700"
+              >
+                Send via WhatsApp
               </button>
             </form>
           </div>

@@ -50,7 +50,7 @@ const terms = [
   {
     number: "10",
     title: "Registration Fee",
-    text: "The candidate registration fee is ₹399 as a one-time registration fee, as communicated during the registration process. The fee relates to the candidate registration and profile process and does not constitute payment for guaranteed employment.",
+    text: "The candidate registration fee is ₹499 as a one-time registration fee, as communicated during the registration process. The fee relates to the candidate registration and profile process and does not constitute payment for guaranteed employment.",
   },
   {
     number: "11",
@@ -99,7 +99,7 @@ export default function TermsPage() {
 
           <div className="mt-6 flex flex-wrap gap-2">
             <span className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-zinc-600 dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-400">
-              ₹399 One-Time Registration
+              ₹499 One-Time Registration
             </span>
             <span className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-zinc-600 dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-400">
               Candidate Process

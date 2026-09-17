@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 const benefits = [
-  { number: "01", title: "One-Time Registration", description: "Pay a nominal ₹399 registration fee once and create your candidate profile for the recruitment process." },
+  { number: "01", title: "One-Time Registration", description: "Pay a nominal ₹499 registration fee once and create your candidate profile for the recruitment process." },
   { number: "02", title: "Career Preference Based", description: "Tell us about your preferred role, industry, skills and location so opportunities can align with your career goals." },
   { number: "03", title: "Multiple Industries", description: "Explore opportunities across automotive, manufacturing, engineering, electrical, EV and other industries." },
   { number: "04", title: "Multiple Locations", description: "Discover opportunities across Haridwar, SIDCUL, Pantnagar and other growing industrial locations." },

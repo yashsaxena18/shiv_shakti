@@ -60,7 +60,7 @@ export default function Home() {
 
         {/* ===================================================
             REGISTRATION CTA
-            + ₹399 ONE-TIME REGISTRATION
+            + ₹499 ONE-TIME REGISTRATION
         ==================================================== */}
 
         <RegistrationCTA />

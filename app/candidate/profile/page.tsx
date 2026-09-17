@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
+import { Loader2 } from "lucide-react";
 import { SiteNavbar } from "@/components/site-navbar";
 import ProfileStep1 from "@/components/candidate/profile-step-1";
 import ProfileStep2 from "@/components/candidate/profile-step-2";
@@ -47,6 +48,7 @@ export default function CandidateProfilePage() {
   const [experience, setExperience] = useState("");
 
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const [errors, setErrors] = useState<
@@ -394,6 +396,7 @@ export default function CandidateProfilePage() {
     );
 
     try {
+      setIsSubmitting(true);
       if (!userId) {
         router.push("/login");
         return;
@@ -466,6 +469,8 @@ export default function CandidateProfilePage() {
       console.error(error);
 
       alert("Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -580,9 +585,19 @@ export default function CandidateProfilePage() {
     <button
       type="button"
       onClick={handleNext}
-      className="flex h-11 w-full items-center justify-center rounded-xl px-6 text-sm font-semibold transition sm:w-auto sm:min-w-[140px] bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+      disabled={isSubmitting}
+      className="flex h-11 w-full items-center justify-center rounded-xl px-6 text-sm font-semibold transition sm:w-auto sm:min-w-[140px] bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-70 disabled:cursor-pointer cursor-pointer"
     >
-      {step === 3 ? "Submit" : "Next →"}
+      {isSubmitting ? (
+        <span className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Submitting...
+        </span>
+      ) : step === 3 ? (
+        "Submit"
+      ) : (
+        "Next →"
+      )}
     </button>
   </div>
 </div>

@@ -23,7 +23,7 @@ export async function POST(
       );
     }
 
-    console.log("mark-paid called with id:", candidateId);
+    console.log("mark-paid-online called with id:", candidateId);
 
     // Find candidate and their user ID (check both id and userId just in case)
     const candidate = await prisma.candidateProfile.findFirst({
@@ -36,13 +36,11 @@ export async function POST(
       include: { user: true },
     });
 
-    console.log("Found candidate:", candidate);
-
     if (!candidate) {
       console.error(`Candidate with ID ${candidateId} not found in DB!`);
       return NextResponse.json(
         { success: false, message: "Candidate not found." },
-        { status: 400 } // Changed from 404 to 400 to trace
+        { status: 400 }
       );
     }
 
@@ -61,12 +59,12 @@ export async function POST(
       );
     }
 
-    const receiptNumber = `CASH_${Date.now()}_${candidate.userId.substring(0, 5)}`;
+    const receiptNumber = `ONLINE_${Date.now()}_${candidate.userId.substring(0, 5)}`;
 
     const newPayment = await prisma.payment.create({
       data: {
         userId: candidate.userId,
-        mode: "CASH",
+        mode: "ONLINE",
         amount: amount * 100, // store in paise
         currency: "INR",
         status: "SUCCESS",
@@ -85,19 +83,19 @@ export async function POST(
       await resend.emails.send({
         from: "onboarding@resend.dev",
         to: candidate.user.email,
-        subject: "Payment Receipt - Shiv Shakti Multi Service",
+        subject: "Online Payment Receipt - Shiv Shakti Multi Service",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.6; color: #333;">
             <p><strong>Payment Receipt</strong></p>
 
             <p>Dear ${candidate.user.fullName},</p>
 
-            <p>We are pleased to confirm that your payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.</p>
+            <p>We are pleased to confirm that your online payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.</p>
 
             <p><strong>Payment Details</strong></p>
 
             <p>Amount Paid: ₹${amount}<br/>
-            Payment Method: Cash<br/>
+            Payment Method: Online<br/>
             Receipt ID: ${receiptNumber}<br/>
             Payment Date: ${dateStr}<br/>
             Service: Premium Candidate</p>
@@ -137,7 +135,7 @@ export async function POST(
     });
 
   } catch (error: any) {
-    console.error("Mark Paid API Error:", error);
+    console.error("Mark Paid Online API Error:", error);
 
     if (error.message === "Unauthorized") {
       return NextResponse.json(

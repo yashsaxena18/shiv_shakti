@@ -79,6 +79,7 @@ model Interview {
   candidateProfile CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   
   companyName      String
+  designation      String?
   date             DateTime
   time             String
   location         String

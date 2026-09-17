@@ -106,7 +106,7 @@ export default function RegistrationCTA() {
                 </p>
 
                 <p className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
-                  ₹399
+                  ₹499
                 </p>
               </div>
 
@@ -263,7 +263,7 @@ export default function RegistrationCTA() {
 
         {/* Bottom note */}
         <p className="mt-6 text-center text-[10px] font-bold leading-5 text-amber-400 sm:text-xs">
-          ₹399 is a one-time candidate registration fee. Registration does not
+          ₹499 is a one-time candidate registration fee. Registration does not
           guarantee employment or selection for a particular opportunity.
         </p>
       </div>
