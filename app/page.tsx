@@ -60,7 +60,7 @@ export default function Home() {
 
         {/* ===================================================
             REGISTRATION CTA
-            + ₹499 ONE-TIME REGISTRATION
+            + STARTS AT ₹499 (NON-REFUNDABLE)
         ==================================================== */}
 
         <RegistrationCTA />

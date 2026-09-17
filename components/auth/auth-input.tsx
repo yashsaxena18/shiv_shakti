@@ -11,6 +11,7 @@ type AuthInputProps = {
   onChange: (value: string) => void;
   error?: string;
   autoComplete?: string;
+  min?: string | number;
 };
 
 export function AuthInput({
@@ -22,6 +23,7 @@ export function AuthInput({
   onChange,
   error,
   autoComplete,
+  min,
 }: AuthInputProps) {
   const [showPassword, setShowPassword] = useState(false);
   const inputType = type === "password" && showPassword ? "text" : type;
@@ -40,6 +42,7 @@ export function AuthInput({
   onChange={(event) => onChange(event.target.value)}
   placeholder={placeholder}
   autoComplete={autoComplete}
+  min={min}
   className="h-11 sm:h-12 w-full rounded-xl border border-zinc-300 bg-white px-4 pr-12 text-sm outline-none transition-all duration-200 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
 />
         {type === "password" ? (

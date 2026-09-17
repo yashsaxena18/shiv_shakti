@@ -221,7 +221,7 @@ export default function CandidateDashboardPage() {
                 disabled={paymentProcessing}
                 className="w-full sm:w-auto rounded-xl bg-green-600 px-8 py-4 font-bold text-white text-lg hover:bg-green-700 transition active:scale-95 disabled:opacity-70"
               >
-                {paymentProcessing ? "Processing..." : "Pay ₹499 Now"}
+                {paymentProcessing ? "Processing..." : "Pay Registration Fee Now"}
               </button>
               
               <Link 

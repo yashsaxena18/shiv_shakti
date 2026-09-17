@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { requireAdmin } from "@/lib/require-admin";
 
 const createCandidateSchema = z.object({
   fullName: z.string().min(2, "Name is required"),
@@ -15,6 +16,7 @@ const createCandidateSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    await requireAdmin();
     const body = await request.json();
     const result = createCandidateSchema.safeParse(body);
 
@@ -41,7 +43,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Default password as requested: 00000000
+ 
     const hashedPassword = await bcrypt.hash("00000000", 12);
 
     await prisma.$transaction(async (tx) => {
@@ -51,7 +53,7 @@ export async function POST(request: Request) {
           email,
           password: hashedPassword,
           role: "candidate",
-          profileCompleted: false, // Incomplete profile initially
+          profileCompleted: false, 
         },
       });
 

@@ -319,7 +319,7 @@ function CandidatesContent() {
           const rd = result.receiptDetails;
           const waText = `Payment Receipt
 
-Dear ${rd.candidateName},
+Dear Sir/Mam ${rd.candidateName},
 
 We are pleased to confirm that your payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.
 
@@ -383,7 +383,7 @@ Recruitment & Placement Services`;
         // Format the new WhatsApp message
         const waText = `✨ INTERVIEW INVITATION
 
-Dear Candidate,
+Dear Sir/Mam ${schedulingFor.user?.fullName || "Candidate"},
 
 Greetings from Shiv Shakti Multi Service.
 
@@ -466,7 +466,7 @@ Recruitment • Placement • Multi Services`;
 
     const waText = `Payment Request
 
-Dear ${onlinePayFor.user?.fullName || "Candidate"},
+Dear Sir/Mam ${onlinePayFor.user?.fullName || "Candidate"},
 
 We are pleased to inform you that your profile has been processed. To proceed further, please complete your online payment of ₹${onlinePayForm.amount}.
 
@@ -514,7 +514,7 @@ Recruitment & Placement Services`;
           const rd = result.receiptDetails;
           const waText = `Online Payment Receipt
 
-Dear ${rd.candidateName},
+Dear Sir/Mam ${rd.candidateName},
 
 We are pleased to confirm that your online payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.
 
@@ -1284,6 +1284,17 @@ Recruitment & Placement Services`;
                   type="text"
                   value={interviewForm.companyName}
                   onChange={(e) => setInterviewForm({...interviewForm, companyName: e.target.value})}
+                  className="w-full rounded-xl border px-3 py-2 outline-none focus:border-zinc-900"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-zinc-700">Designation (Job Role)</label>
+                <input
+                  required
+                  type="text"
+                  value={interviewForm.designation}
+                  onChange={(e) => setInterviewForm({...interviewForm, designation: e.target.value})}
                   className="w-full rounded-xl border px-3 py-2 outline-none focus:border-zinc-900"
                 />
               </div>

@@ -247,7 +247,7 @@ export async function POST(req: Request) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #18181b;">
           <h2 style="margin-bottom: 5px;">Shiv Shakti Multi Service</h2>
-          <p>Dear ${user.fullName},</p>
+          <p>Dear Sir/Mam ${user.fullName},</p>
           <p>Your candidate registration payment has been successfully verified.</p>
           <div style="border: 1px solid #e4e4e7; border-radius: 8px; padding: 18px; margin: 20px 0;">
             <p><strong>Receipt Number:</strong> ${finalReceiptNumber}</p>

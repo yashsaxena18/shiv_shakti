@@ -67,8 +67,8 @@ export default function PremiumPage() {
               Membership Fee
             </p>
 
-            <h3 className="mt-2 text-4xl font-bold">
-              ₹499
+            <h3 className="mt-2 text-2xl sm:text-4xl font-bold">
+              Starts at ₹499 (non-refundable)
             </h3>
 
             <p className="mt-2 text-zinc-600">

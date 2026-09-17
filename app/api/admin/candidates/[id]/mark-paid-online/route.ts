@@ -88,7 +88,7 @@ export async function POST(
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.6; color: #333;">
             <p><strong>Payment Receipt</strong></p>
 
-            <p>Dear ${candidate.user.fullName},</p>
+            <p>Dear Sir/Mam ${candidate.user.fullName},</p>
 
             <p>We are pleased to confirm that your online payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.</p>
 

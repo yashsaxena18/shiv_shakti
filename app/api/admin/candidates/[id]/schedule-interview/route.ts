@@ -72,7 +72,7 @@ export async function POST(
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.6; color: #333;">
             <p>✨ <strong>INTERVIEW INVITATION</strong></p>
 
-            <p>Dear Candidate,</p>
+            <p>Dear Sir/Mam ${candidate.user.fullName},</p>
 
             <p>Greetings from Shiv Shakti Multi Service.</p>
 
