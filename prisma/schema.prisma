@@ -123,6 +123,8 @@ model EmployerProfile {
   companyAddress     String
   candidatesRequired Int
   status             String   @default("PENDING")
+  selectedJobField   String?
+  preferredJobField  String?
   
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

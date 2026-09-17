@@ -42,11 +42,21 @@ export default function EmployersPage() {
       setLoading(true);
 
       const response = await fetch("/api/admin/employers");
-      const result = await response.json();
+      
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response. Please try again.");
+        return;
+      }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         setEmployers(result.employers || []);
-        setStats(result.stats);
+        setStats(result.stats || {
+          total: 0, pending: 0, approved: 0, rejected: 0
+        });
       } else {
         toast.error(result.message || "Unable to load employers.");
       }
@@ -94,9 +104,16 @@ export default function EmployersPage() {
         method: "DELETE",
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response.");
+        return;
+      }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         await loadEmployers();
         toast.success("Employer deleted successfully.");
       } else {
@@ -121,9 +138,16 @@ export default function EmployersPage() {
         }),
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response.");
+        return;
+      }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         setEmployers((prev) =>
           prev.map((employer) =>
             employer.id === id ? { ...employer, status } : employer
@@ -173,25 +197,25 @@ export default function EmployersPage() {
 
         <div className="rounded-3xl border bg-white p-4 shadow-sm sm:p-6">
           {/* Filters */}
-          <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:flex-wrap">
             {/* Search */}
-            <div className="relative w-full lg:max-w-sm">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
+            <div className="relative w-full lg:w-auto lg:flex-1 lg:min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
 
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by company, name, email..."
-                className="w-full rounded-xl border border-zinc-300 bg-white py-3 pl-12 pr-12 outline-none transition-all duration-200 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
+                className="w-full rounded-xl border border-zinc-300 bg-white text-zinc-900 py-2.5 pl-10 pr-10 text-sm outline-none transition-all duration-200 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200 min-w-[200px]"
               />
 
               {search && (
                 <button
                   type="button"
                   onClick={() => setSearch("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
                 >
-                  <X size={16} />
+                  <X size={14} />
                 </button>
               )}
             </div>
@@ -200,7 +224,7 @@ export default function EmployersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none lg:w-auto"
+              className="w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-sm outline-none lg:w-auto lg:max-w-[140px] shrink-0 truncate"
             >
               <option value="All">All Status</option>
               <option value="PENDING">Pending</option>
@@ -224,6 +248,8 @@ export default function EmployersPage() {
                       <th className="p-4 text-left">Employer Name</th>
                       <th className="p-4 text-left">Email</th>
                       <th className="p-4 text-left">Phone</th>
+                      <th className="p-4 text-left">Job Category</th>
+                      <th className="p-4 text-left">Preferred Job</th>
                       <th className="p-4 text-left">Req. Candidates</th>
                       <th className="p-4 text-left">Status</th>
                       <th className="p-4 text-center">Actions</th>
@@ -254,6 +280,8 @@ export default function EmployersPage() {
                               "-"
                             )}
                           </td>
+                          <td className="p-4">{employer.selectedJobField || "-"}</td>
+                          <td className="p-4">{employer.preferredJobField || "-"}</td>
                           <td className="p-4">{employer.candidatesRequired || "0"}</td>
                           <td className="p-4">
                             <select
@@ -299,7 +327,7 @@ export default function EmployersPage() {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={7} className="p-10 text-center text-zinc-500">
+                        <td colSpan={9} className="p-10 text-center text-zinc-500">
                           No employers found.
                         </td>
                       </tr>
@@ -347,6 +375,21 @@ export default function EmployersPage() {
                           ) : (
                             <p className="mt-1 text-zinc-600">-</p>
                           )}
+                        </div>
+
+                        <div className="col-span-2 grid grid-cols-2 gap-4">
+                          <div>
+                            <span className="font-medium text-zinc-700">Job Category</span>
+                            <p className="mt-1 text-zinc-600">
+                              {employer.selectedJobField || "-"}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="font-medium text-zinc-700">Preferred Job</span>
+                            <p className="mt-1 text-zinc-600">
+                              {employer.preferredJobField || "-"}
+                            </p>
+                          </div>
                         </div>
 
                         <div className="col-span-2">

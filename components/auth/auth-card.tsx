@@ -10,7 +10,7 @@ type AuthCardProps = {
 export function AuthCard({ title, description, children, footer, className = "" }: AuthCardProps) {
   return (
     <div className={cn(
-  "rounded-3xl border border-zinc-200 bg-white p-5 sm:p-8",
+  "rounded-3xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 p-5 sm:p-8",
   className
 )}>
       <div className="space-y-2 text-center">

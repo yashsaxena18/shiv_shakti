@@ -71,11 +71,21 @@ function CandidatesContent() {
 
       const url = typeParam ? `/api/admin/candidates?type=${typeParam}` : "/api/admin/candidates";
       const response = await fetch(url);
-      const result = await response.json();
+      
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response. Please try again.");
+        return;
+      }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         setCandidates(result.candidates || []);
-        setStats(result.stats);
+        setStats(result.stats || {
+          total: 0, applied: 0, shortlisted: 0, interview: 0, selected: 0, rejected: 0
+        });
       } else {
         toast.error(
           result.message || "Unable to load candidates."
@@ -175,9 +185,16 @@ function CandidatesContent() {
         }
       );
 
-      const result = await response.json();
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response.");
+        return;
+      }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         await loadCandidates();
         toast.success("Candidate deleted successfully.");
       } else {
@@ -210,9 +227,16 @@ function CandidatesContent() {
         }
       );
 
-      const result = await response.json();
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response.");
+        return;
+      }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         setCandidates((previousCandidates) =>
           previousCandidates.map((candidate) =>
             candidate.id === id
@@ -255,9 +279,16 @@ function CandidatesContent() {
         body: JSON.stringify({ amount }),
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response.");
+        return;
+      }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         await loadCandidates();
         toast.success("Candidate marked as paid via Cash.");
       } else {
@@ -281,8 +312,16 @@ function CandidatesContent() {
         body: JSON.stringify(interviewForm),
       });
 
-      const result = await response.json();
-      if (result.success) {
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        toast.error("Invalid server response.");
+        return;
+      }
+
+      if (response.ok && result.success) {
         toast.success("Interview scheduled & Email sent!");
         
         // Open WhatsApp automatically with pre-filled message
@@ -378,10 +417,10 @@ function CandidatesContent() {
 
         <div className="rounded-3xl border bg-white p-4 shadow-sm sm:p-6">
           {/* Filters */}
-          <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:flex-wrap">
             {/* Search */}
-            <div className="relative w-full lg:max-w-sm">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
+            <div className="relative w-full lg:w-auto lg:flex-1 lg:min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
 
               <input
                 value={search}
@@ -389,16 +428,16 @@ function CandidatesContent() {
                   setSearch(e.target.value)
                 }
                 placeholder="Search by name, email, city..."
-                className="w-full rounded-xl border border-zinc-300 bg-white py-3 pl-12 pr-12 outline-none transition-all duration-200 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
+                className="w-full rounded-xl border border-zinc-300 bg-white text-zinc-900 py-2.5 pl-10 pr-10 text-sm outline-none transition-all duration-200 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200 min-w-[200px]"
               />
 
               {search && (
                 <button
                   type="button"
                   onClick={() => setSearch("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
                 >
-                  <X size={16} />
+                  <X size={14} />
                 </button>
               )}
             </div>
@@ -409,7 +448,7 @@ function CandidatesContent() {
               onChange={(e) =>
                 setExperienceFilter(e.target.value)
               }
-              className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none lg:w-auto"
+              className="w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-sm outline-none lg:w-auto lg:max-w-[140px] shrink-0 truncate"
             >
               <option value="All">
                 All Experience
@@ -429,7 +468,7 @@ function CandidatesContent() {
                 setJobCategoryFilter(e.target.value);
                 setJobFieldFilter("All");
               }}
-              className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none lg:w-auto"
+              className="w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-sm outline-none lg:w-auto lg:max-w-[180px] shrink-0 truncate"
             >
               <option value="All">
                 All Job Categories
@@ -451,7 +490,7 @@ function CandidatesContent() {
               onChange={(e) =>
                 setJobFieldFilter(e.target.value)
               }
-              className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none lg:w-auto"
+              className="w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-sm outline-none lg:w-auto lg:max-w-[180px] shrink-0 truncate"
             >
               <option value="All">
                 All Preferred Jobs
@@ -470,7 +509,7 @@ function CandidatesContent() {
               onChange={(e) =>
                 setStatusFilter(e.target.value)
               }
-              className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none lg:w-auto"
+              className="w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-sm outline-none lg:w-auto lg:max-w-[140px] shrink-0 truncate"
             >
               <option value="All">
                 All Status

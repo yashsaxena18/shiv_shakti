@@ -32,7 +32,7 @@ export function DashboardNav() {
   };
 
   return (
-    <header className="border-b bg-white shadow-sm">
+    <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
 
         {/* Logo */}
@@ -56,7 +56,7 @@ export function DashboardNav() {
             className={`text-sm ${
               pathname === "/candidate/dashboard"
                 ? "text-orange-500 font-bold"
-                : "text-zinc-600 hover:text-orange-500"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-orange-500"
             }`}
           >
             Dashboard
@@ -68,13 +68,13 @@ export function DashboardNav() {
 
             <DropdownMenuTrigger asChild>
 
-              <button className="flex items-center gap-2 rounded-full border px-3 py-2 hover:bg-zinc-100">
+              <button className="flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-900 dark:text-white">
 
                 <UserCircle2 size={28} />
 
                 <div className="text-left">
 
-                  <p className="text-sm font-semibold">
+                  <p className="text-sm font-semibold text-zinc-900 dark:text-white">
                     {name}
                   </p>
 
@@ -115,7 +115,7 @@ export function DashboardNav() {
 
             <DropdownMenuTrigger asChild>
 
-              <button className="rounded-lg border p-2 hover:bg-zinc-100">
+              <button className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-900 dark:text-white">
 
                 <Menu size={22} />
 

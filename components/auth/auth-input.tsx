@@ -40,7 +40,7 @@ export function AuthInput({
   onChange={(event) => onChange(event.target.value)}
   placeholder={placeholder}
   autoComplete={autoComplete}
-  className="h-11 sm:h-12 w-full rounded-xl border border-zinc-300 bg-white px-4 pr-12 text-sm outline-none transition-all duration-200 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900"
+  className="h-11 sm:h-12 w-full rounded-xl border border-zinc-300 bg-white px-4 pr-12 text-sm outline-none transition-all duration-200 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
 />
         {type === "password" ? (
           <button

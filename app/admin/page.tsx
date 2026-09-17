@@ -61,15 +61,18 @@ export default function AdminDashboardPage() {
   const unpaidUsers = candidates.length - paidUsers;
   const totalUsers = candidates.length + employers.length;
 
+  if (loading) {
+    return (
+      <div className="flex h-[calc(100vh-100px)] flex-col items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900" />
+        <p className="mt-4 font-medium text-zinc-600">Loading... please wait</p>
+      </div>
+    );
+  }
+
   return (
-    <div >
-
-
-
+    <div>
       <main className="mx-auto max-w-7xl px-6 py-8">
-
-
-
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
 
 

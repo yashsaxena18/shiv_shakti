@@ -7,6 +7,7 @@ import { useState } from "react";
 import { AuthButton } from "@/components/auth/auth-button";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
+import { jobCategories, jobCategoryNames } from "@/lib/job-categories";
 
 export default function EmployerRegisterPage() {
   const router = useRouter();
@@ -18,6 +19,8 @@ export default function EmployerRegisterPage() {
     password: "",
     companyAddress: "",
     candidatesRequired: "",
+    selectedJobField: "",
+    preferredJobField: "",
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -54,6 +57,13 @@ export default function EmployerRegisterPage() {
       nextErrors.candidatesRequired = "Must be a valid number of 1 or more.";
     }
 
+    if (!formData.selectedJobField) {
+      nextErrors.selectedJobField = "Please select a job category.";
+    }
+    if (!formData.preferredJobField) {
+      nextErrors.preferredJobField = "Please select a preferred job.";
+    }
+
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
 
@@ -86,7 +96,7 @@ export default function EmployerRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <main className="grid min-h-screen lg:grid-cols-2">
         <section className="relative hidden overflow-hidden bg-zinc-950 lg:flex lg:min-h-screen lg:items-center">
           <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
@@ -202,6 +212,49 @@ export default function EmployerRegisterPage() {
                   onChange={(val) => handleChange("candidatesRequired", val)}
                   error={errors.candidatesRequired}
                 />
+
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-zinc-700">Job Category</label>
+                  <select
+                    value={formData.selectedJobField}
+                    onChange={(e) => {
+                      handleChange("selectedJobField", e.target.value);
+                      handleChange("preferredJobField", "");
+                    }}
+                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
+                  >
+                    <option value="">Select Category</option>
+                    {jobCategoryNames.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.selectedJobField && (
+                    <p className="text-xs text-red-500">{errors.selectedJobField}</p>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-zinc-700">Preferred Job</label>
+                  <select
+                    value={formData.preferredJobField}
+                    onChange={(e) => handleChange("preferredJobField", e.target.value)}
+                    disabled={!formData.selectedJobField}
+                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200 disabled:opacity-50"
+                  >
+                    <option value="">Select Job</option>
+                    {formData.selectedJobField &&
+                      jobCategories[formData.selectedJobField]?.map((job) => (
+                        <option key={job} value={job}>
+                          {job}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.preferredJobField && (
+                    <p className="text-xs text-red-500">{errors.preferredJobField}</p>
+                  )}
+                </div>
 
                 <AuthInput
                   id="password"

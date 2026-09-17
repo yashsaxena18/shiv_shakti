@@ -474,6 +474,227 @@ export const jobCategories: Record<string, string[]> = {
     "Graduate Apprentice",
     "Technician Apprentice",
   ],
+
+  "Quality Control / QA": [
+    "Quality Inspector", "Quality Checker", "Quality Control Executive", "Quality Control Engineer",
+    "Quality Control Technician", "Quality Analyst", "Quality Assurance Executive", "Quality Assurance Engineer",
+    "QA Technician", "QA Supervisor", "QA Manager", "Quality Manager", "Incoming Quality Inspector",
+    "In-Process Quality Inspector", "Final Quality Inspector", "Production Quality Inspector",
+    "Vendor Quality Engineer", "Supplier Quality Engineer", "Customer Quality Engineer", "Quality Auditor",
+    "Internal Quality Auditor", "Process Auditor", "ISO Coordinator", "ISO Auditor",
+    "Quality Documentation Executive", "Quality Control Chemist", "Quality Control Lab Technician",
+    "NDT Technician", "NDT Inspector", "Metrology Technician", "Calibration Technician", "Quality Apprentice",
+  ],
+
+  "Purchase / Procurement": [
+    "Purchase Executive", "Purchase Assistant", "Purchase Officer", "Purchase Manager",
+    "Procurement Executive", "Procurement Officer", "Procurement Manager", "Procurement Specialist",
+    "Procurement Coordinator", "Buyer", "Senior Buyer", "Strategic Buyer", "Purchase Coordinator",
+    "Vendor Development Executive", "Vendor Development Manager", "Vendor Management Executive",
+    "Supplier Relationship Executive", "Sourcing Executive", "Sourcing Manager",
+    "Strategic Sourcing Specialist", "Purchase Analyst", "Procurement Analyst",
+  ],
+
+  "Production Planning / Industrial Engineering": [
+    "Production Planner", "Production Planning Executive", "Production Planning Officer",
+    "Production Planning Manager", "PPC Executive", "PPC Engineer", "PPC Officer", "PPC Manager",
+    "Industrial Engineer", "Industrial Engineering Executive", "Process Engineer",
+    "Process Improvement Engineer", "Process Improvement Executive", "Manufacturing Engineer",
+    "Manufacturing Engineering Executive", "Operations Engineer", "Operations Executive",
+    "Operations Manager", "Plant Engineer", "Plant Manager", "Work Study Officer",
+    "Work Study Engineer", "Lean Manufacturing Engineer", "Continuous Improvement Engineer",
+  ],
+
+  "Maintenance / Engineering": [
+    "Maintenance Engineer", "Maintenance Executive", "Maintenance Supervisor", "Maintenance Manager",
+    "Mechanical Engineer", "Electrical Engineer", "Electronics Engineer", "Instrumentation Engineer",
+    "Instrumentation Technician", "Mechatronics Engineer", "Mechatronics Technician", "Automation Engineer",
+    "Automation Technician", "PLC Programmer", "PLC Technician", "Control Systems Engineer",
+    "Utility Engineer", "Utility Technician", "Plant Maintenance Engineer", "Preventive Maintenance Engineer",
+    "Maintenance Planner", "Maintenance Fitter", "Mechanical Supervisor", "Electrical Supervisor",
+  ],
+
+  "Research & Development": [
+    "R&D Engineer", "R&D Executive", "R&D Manager", "Research Assistant", "Research Associate",
+    "Research Scientist", "Development Engineer", "Product Development Engineer",
+    "Product Development Executive", "Process Development Engineer", "Prototype Engineer",
+    "R&D Technician", "Laboratory Research Assistant", "Technical Research Assistant",
+    "Innovation Executive", "Innovation Manager",
+  ],
+
+  "Engineering Design": [
+    "Design Engineer", "Mechanical Design Engineer", "Electrical Design Engineer",
+    "Civil Design Engineer", "Structural Design Engineer", "CAD Engineer", "CAD Designer",
+    "AutoCAD Designer", "SolidWorks Designer", "3D CAD Designer", "Design Executive", "Design Manager",
+    "Draftsman", "Mechanical Draftsman", "Civil Draftsman", "Electrical Draftsman", "Design Technician",
+  ],
+
+  "Food Processing": [
+    "Food Processing Operator", "Food Processing Executive", "Food Production Supervisor",
+    "Food Production Manager", "Food Processing Technician", "Food Processing Worker", "Food Packer",
+    "Food Packing Operator", "Food Product Handler", "Food Quality Inspector", "Food Quality Analyst",
+    "Food Safety Executive", "Food Safety Officer", "Food Technologist", "Food Technology Executive",
+    "Bakery Production Supervisor", "Baking Assistant", "Dairy Processing Operator",
+    "Fruit Processing Operator", "Vegetable Processing Operator", "Cold Storage Operator",
+  ],
+
+  "Textile / Garment": [
+    "Tailor", "Master Tailor", "Garment Worker", "Garment Operator", "Sewing Machine Operator",
+    "Cutting Operator", "Fabric Cutter", "Embroidery Operator", "Textile Worker", "Textile Supervisor",
+    "Textile Manager", "Garment Supervisor", "Garment Production Manager", "Textile Designer",
+    "Fashion Designer", "Pattern Maker", "Pattern Master", "Quality Checker - Garments",
+    "Garment Quality Inspector", "Finishing Operator", "Pressing Operator", "Textile Merchandiser",
+  ],
+
+  "Real Estate / Property": [
+    "Real Estate Agent", "Property Dealer", "Real Estate Executive", "Real Estate Sales Executive",
+    "Real Estate Sales Manager", "Property Consultant", "Property Advisor", "Leasing Executive",
+    "Leasing Manager", "Property Manager", "Real Estate Relationship Manager",
+    "Site Acquisition Executive", "Real Estate Telecaller", "Real Estate Business Development Executive",
+    "Property Coordinator",
+  ],
+
+  "Travel / Tourism": [
+    "Travel Agent", "Travel Consultant", "Travel Executive", "Tour Executive", "Tour Manager",
+    "Tour Guide", "Travel Coordinator", "Travel Desk Executive", "Ticketing Executive",
+    "Reservation Executive", "Visa Consultant", "Visa Processing Executive", "Holiday Consultant",
+    "Travel Sales Executive", "Tourism Executive", "Destination Manager", "Airport Travel Executive",
+  ],
+
+  "Event Management": [
+    "Event Executive", "Event Coordinator", "Event Manager", "Event Planner", "Event Producer",
+    "Event Sales Executive", "Wedding Planner", "Wedding Coordinator", "Wedding Manager",
+    "Event Operations Executive", "Event Marketing Executive", "Exhibition Coordinator",
+    "Conference Coordinator", "Stage Manager", "Event Assistant",
+  ],
+
+  "Customer Service / Client Success": [
+    "Customer Service Executive", "Customer Service Representative", "Customer Service Officer",
+    "Customer Service Manager", "Customer Support Executive", "Customer Support Representative",
+    "Client Service Executive", "Client Relationship Executive", "Client Relationship Manager",
+    "Client Success Executive", "Customer Success Executive", "Customer Success Manager",
+    "Customer Experience Executive", "Customer Experience Manager", "Helpdesk Executive",
+    "Service Desk Executive", "Technical Support Executive", "Complaint Resolution Executive",
+  ],
+
+  "Telecom": [
+    "Telecom Technician", "Telecom Engineer", "Telecom Field Engineer", "Network Technician",
+    "Network Engineer", "Fiber Technician", "Fiber Optic Technician", "Fiber Splicing Technician",
+    "Broadband Technician", "Installation Technician", "Telecom Field Executive", "Telecom Supervisor",
+    "Telecom Project Engineer", "Tower Technician", "Tower Climber", "RF Engineer", "NOC Engineer",
+    "NOC Executive",
+  ],
+
+  "Chemical / Petroleum": [
+    "Chemical Engineer", "Chemical Technician", "Chemical Operator", "Process Operator", "Plant Operator",
+    "Chemical Plant Operator", "Chemical Supervisor", "Chemical Plant Manager", "Process Engineer",
+    "Petroleum Engineer", "Oil & Gas Technician", "Refinery Operator", "Refinery Technician",
+    "Production Chemist", "Quality Control Chemist", "Laboratory Chemist", "Chemical Lab Technician",
+  ],
+
+  "Mining / Metals": [
+    "Mining Engineer", "Mining Supervisor", "Mining Technician", "Mine Operator", "Mining Surveyor",
+    "Mine Foreman", "Blasting Assistant", "Geologist", "Geological Assistant", "Metallurgical Engineer",
+    "Metallurgy Technician", "Foundry Worker", "Foundry Supervisor", "Furnace Operator",
+    "Steel Plant Operator", "Metal Fabricator",
+  ],
+
+  "Architecture / Interior Design": [
+    "Architect", "Junior Architect", "Senior Architect", "Architectural Assistant", "Interior Designer",
+    "Interior Design Assistant", "Interior Design Executive", "Interior Design Consultant",
+    "Interior Designer - Residential", "Interior Designer - Commercial", "3D Visualizer",
+    "3D Interior Designer", "Architectural Draughtsman", "CAD Designer", "Site Interior Supervisor",
+    "Furniture Designer",
+  ],
+
+  "Environment / Waste Management": [
+    "Environmental Engineer", "Environmental Executive", "Environmental Officer", "Environmental Consultant",
+    "EHS Engineer", "Waste Management Executive", "Waste Management Supervisor", "Waste Collection Worker",
+    "Waste Segregation Worker", "Recycling Worker", "Recycling Supervisor", "Water Treatment Operator",
+    "STP Operator", "ETP Operator", "Water Quality Technician", "Pollution Control Officer",
+  ],
+
+  "Investment / Wealth Management": [
+    "Investment Analyst", "Equity Research Analyst", "Research Analyst", "Financial Advisor",
+    "Investment Advisor", "Wealth Manager", "Wealth Management Executive", "Portfolio Manager",
+    "Mutual Fund Advisor", "Mutual Fund Executive", "Stock Broker", "Dealer", "Equity Dealer",
+    "Capital Market Executive", "Investment Banking Analyst", "Investment Banking Associate",
+    "Risk Analyst", "Risk Manager", "Treasury Executive", "Treasury Manager",
+  ],
+
+  "Insurance": [
+    "Insurance Advisor", "Insurance Agent", "Insurance Sales Executive", "Insurance Relationship Manager",
+    "Insurance Manager", "Insurance Officer", "Insurance Operations Executive", "Insurance Claims Executive",
+    "Claims Officer", "Claims Manager", "Claims Analyst", "Underwriting Executive", "Underwriter",
+    "Underwriting Manager", "Insurance Processing Executive", "Policy Servicing Executive",
+    "Insurance Telecaller", "Bancassurance Executive", "Insurance Renewal Executive",
+  ],
+
+  "Export / Import / International Trade": [
+    "Export Executive", "Export Manager", "Import Executive", "Import Manager",
+    "Export Documentation Executive", "Import Documentation Executive", "EXIM Executive", "EXIM Manager",
+    "International Trade Executive", "Shipping Executive", "Shipping Coordinator",
+    "Freight Forwarding Executive", "Customs Documentation Executive", "Customs Clearance Executive",
+    "Logistics Coordinator", "International Sales Executive",
+  ],
+
+  "Government / Public Sector": [
+    "Government Clerk", "Junior Assistant", "Senior Assistant", "Data Entry Operator", "Office Assistant",
+    "LDC", "UDC", "Stenographer", "Junior Secretariat Assistant", "Government Accountant",
+    "Tax Assistant", "Income Tax Inspector", "GST Inspector", "Police Constable", "Sub Inspector",
+    "Forest Guard", "Forest Officer", "Patwari", "Village Development Officer", "Panchayat Assistant",
+    "Government Teacher", "Government Engineer", "Junior Engineer", "Assistant Engineer",
+    "Government Nurse", "Government Pharmacist", "Lab Technician",
+  ],
+
+  "Laboratory / Scientific": [
+    "Lab Assistant", "Laboratory Technician", "Lab Technician", "Laboratory Analyst",
+    "Laboratory Executive", "Research Assistant", "Research Associate", "Chemist", "Microbiologist",
+    "Biotechnologist", "Pathology Technician", "Sample Collection Technician", "Lab Supervisor",
+    "Lab Manager", "Scientific Assistant", "Scientific Officer",
+  ],
+
+  "Printing / Packaging": [
+    "Printing Operator", "Printing Machine Operator", "Offset Printing Operator",
+    "Digital Printing Operator", "Printing Supervisor", "Printing Manager", "Packaging Operator",
+    "Packaging Supervisor", "Packaging Executive", "Packaging Manager", "Packing Machine Operator",
+    "Packaging Designer", "Prepress Operator", "DTP Operator", "Binding Operator",
+    "Printing Quality Inspector", "Packaging Quality Inspector",
+  ],
+
+  "Fashion / Apparel": [
+    "Fashion Designer", "Fashion Design Assistant", "Fashion Stylist", "Fashion Consultant",
+    "Fashion Merchandiser", "Apparel Merchandiser", "Garment Merchandiser", "Fashion Illustrator",
+    "Pattern Designer", "Pattern Master", "Tailor", "Master Tailor", "Boutique Manager",
+    "Boutique Assistant", "Fashion Sales Executive",
+  ],
+
+  "Renewable Energy": [
+    "Solar Technician", "Solar Engineer", "Solar Installer", "Solar Supervisor", "Solar Sales Executive",
+    "Solar Project Engineer", "Solar Project Manager", "Solar O&M Technician",
+    "Solar Maintenance Technician", "Wind Turbine Technician", "Wind Energy Engineer",
+    "Wind Farm Technician", "Renewable Energy Engineer", "Renewable Energy Technician",
+    "Renewable Energy Project Manager", "Battery Technician", "Battery Engineer",
+    "Energy Storage Technician", "EV Charging Technician",
+  ],
+
+  "EV / Electric Vehicle": [
+    "EV Technician", "EV Mechanic", "EV Service Technician", "EV Maintenance Technician",
+    "EV Battery Technician", "EV Battery Engineer", "EV Charging Technician",
+    "EV Charging Station Operator", "EV Service Advisor", "EV Sales Executive", "EV Sales Consultant",
+    "EV Diagnostic Technician", "Automotive Electrician", "Electric Vehicle Engineer",
+    "EV Production Operator",
+  ],
+
+  "Semiconductor / Electronics Manufacturing": [
+    "Semiconductor Technician", "Semiconductor Engineer", "Electronics Manufacturing Technician",
+    "Electronics Production Operator", "PCB Assembly Operator", "PCB Technician", "SMT Operator",
+    "SMT Technician", "Electronics Quality Inspector", "Electronics Testing Technician",
+    "Test Engineer", "Process Engineer", "VLSI Engineer", "Embedded Engineer",
+    "Embedded Systems Engineer", "Chip Design Engineer", "IC Design Engineer",
+    "Semiconductor Process Engineer", "Semiconductor Equipment Technician",
+  ],
+
   "Special Job Sections": [
     "Fresher Jobs",
     "Female Jobs",

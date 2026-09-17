@@ -30,9 +30,7 @@ export function SiteNavbar() {
     setMounted(true);
 
     const storedTheme = localStorage.getItem("theme");
-    const dark =
-      storedTheme === "dark" ||
-      (!storedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const dark = storedTheme === "dark";
 
     document.documentElement.classList.toggle("dark", dark);
     document.documentElement.style.colorScheme = dark ? "dark" : "light";

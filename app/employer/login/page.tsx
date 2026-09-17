@@ -57,7 +57,7 @@ export default function EmployerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <main className="grid min-h-screen lg:grid-cols-2">
 
         <section className="relative hidden overflow-hidden bg-zinc-950 lg:flex lg:min-h-screen lg:items-center">

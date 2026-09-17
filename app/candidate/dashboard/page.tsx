@@ -195,7 +195,7 @@ export default function CandidateDashboardPage() {
   const pastInterviews = interviews.filter((int: any) => new Date(int.date) < today);
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
       <DashboardNav />
 
@@ -205,13 +205,13 @@ export default function CandidateDashboardPage() {
             UNPAID VIEW (PAYMENT WALL)
         ======================================== */}
         {!isPaid && (
-          <div className="flex flex-col items-center justify-center rounded-3xl bg-white px-6 py-24 text-center shadow-sm border border-zinc-200">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-orange-100 text-orange-600 mb-6">
+          <div className="flex flex-col items-center justify-center rounded-3xl bg-white dark:bg-zinc-900 px-6 py-24 text-center shadow-sm border border-zinc-200 dark:border-zinc-800">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-500/10 text-orange-600 mb-6">
               <BriefcaseBusiness className="h-10 w-10" />
             </div>
-            <h1 className="text-3xl font-bold sm:text-4xl text-zinc-900">Unlock Job Opportunities</h1>
-            <p className="mt-4 max-w-xl text-lg text-zinc-500">
-              Your profile is complete! To start receiving interview calls and direct HR referrals for <strong className="text-zinc-800">{jobField}</strong>, please complete your registration payment.
+            <h1 className="text-3xl font-bold sm:text-4xl text-zinc-900 dark:text-white">Unlock Job Opportunities</h1>
+            <p className="mt-4 max-w-xl text-lg text-zinc-500 dark:text-zinc-400">
+              Your profile is complete! To start receiving interview calls and direct HR referrals for <strong className="text-zinc-800 dark:text-zinc-200">{jobField}</strong>, please complete your registration payment.
             </p>
             
             <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
@@ -330,27 +330,27 @@ export default function CandidateDashboardPage() {
                 title="Profile Overview"
                 description={<>Your information saved in Shiv Shakti Multi Service.</>}
               >
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 rounded-xl border p-4">
-                    <UserRound className="h-5 w-5 text-zinc-600" />
+                <div className="space-y-4 text-zinc-900 dark:text-white">
+                  <div className="flex items-center gap-3 rounded-xl border dark:border-zinc-800 p-4">
+                    <UserRound className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
                     <div>
-                      <p className="text-sm text-zinc-500">Full Name</p>
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400">Full Name</p>
                       <p className="font-semibold">{fullName}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 rounded-xl border p-4">
-                    <BriefcaseBusiness className="h-5 w-5 text-zinc-600" />
+                  <div className="flex items-center gap-3 rounded-xl border dark:border-zinc-800 p-4">
+                    <BriefcaseBusiness className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
                     <div>
-                      <p className="text-sm text-zinc-500">Experience</p>
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400">Experience</p>
                       <p className="font-semibold">{profile?.experience || "Not Added"}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 rounded-xl border p-4">
-                    <CheckCircle2 className="h-5 w-5 text-zinc-600" />
+                  <div className="flex items-center gap-3 rounded-xl border dark:border-zinc-800 p-4">
+                    <CheckCircle2 className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
                     <div>
-                      <p className="text-sm text-zinc-500">Skills</p>
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400">Skills</p>
                       <p className="font-semibold">{profile?.skills || "Not Added"}</p>
                     </div>
                   </div>
@@ -359,7 +359,7 @@ export default function CandidateDashboardPage() {
                 <div className="mt-6">
                   <button
                     onClick={() => router.push("/candidate/profile")}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white p-4 font-semibold hover:bg-zinc-50 transition"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 font-semibold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
                   >
                     Edit Profile Details
                   </button>

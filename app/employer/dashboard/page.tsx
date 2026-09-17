@@ -93,7 +93,7 @@ export default async function EmployerDashboardPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                 <div className={`h-3 w-3 rounded-full ${employer.status === "PENDING" ? "bg-amber-500" : "bg-green-500"}`} />
@@ -105,6 +105,22 @@ export default async function EmployerDashboardPage() {
             </div>
           </div>
         </div>
+
+        <div className="mt-8 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 className="mb-4 text-xl font-bold text-zinc-900 dark:text-white">Recruitment Details</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Job Category</p>
+              <p className="text-zinc-900 dark:text-white">{employer.selectedJobField || "-"}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Preferred Job</p>
+              <p className="text-zinc-900 dark:text-white">{employer.preferredJobField || "-"}</p>
+            </div>
+          </div>
+        </div>
+
+
 
         <div className="mt-8 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
           <h2 className="mb-4 text-xl font-bold text-zinc-900 dark:text-white">Company Details</h2>
