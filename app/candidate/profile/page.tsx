@@ -446,7 +446,8 @@ export default function CandidateProfilePage() {
             passingYear,
             skills,
 
-            // फिलहाल database में actual job save होगी
+            // Category and Job Field
+            selectedJobField,
             preferredJobField,
 
             experience,
