@@ -195,10 +195,10 @@ export async function POST(req: Request) {
     page.drawLine({ start: { x: 205, y: transactionBoxY + 167 }, end: { x: 545, y: transactionBoxY + 167 }, thickness: 1, color: lightGray });
 
     const transactionRows = [
-      ["Payment ID", paymentRecord.razorpayPaymentId],
-      ["Order ID", paymentRecord.razorpayOrderId],
+      ["Payment ID", paymentRecord.razorpayPaymentId || "N/A"],
+      ["Order ID", paymentRecord.razorpayOrderId || "N/A"],
       ["Amount Paid", `INR ${(paymentRecord.amount / 100).toFixed(2)}`],
-      ["Currency", paymentRecord.currency],
+      ["Currency", paymentRecord.currency || "INR"],
       ["Status", "SUCCESS"],
     ];
 
