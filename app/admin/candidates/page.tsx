@@ -317,26 +317,26 @@ function CandidatesContent() {
 
         if (result.receiptDetails) {
           const rd = result.receiptDetails;
-          const waText = `🧾 *OFFICIAL PAYMENT RECEIPT* 🧾
+          const waText = `\u{1F9FE} *OFFICIAL PAYMENT RECEIPT* \u{1F9FE}
 ━━━━━━━━━━━━━━━━━━━━━
 Dear *${rd.candidateName}*,
 
-We are pleased to confirm that your payment has been successfully received. Welcome to our Premium Candidate service! 🎉
+We are pleased to confirm that your payment has been successfully received. Welcome to our Premium Candidate service! \u{1F389}
 
 *Payment Details:*
-▪️ *Amount Paid:* ₹${rd.amount}
-▪️ *Payment Mode:* Cash 💵
-▪️ *Receipt ID:* ${rd.receiptNumber}
-▪️ *Date:* ${rd.dateStr}
-▪️ *Service:* Premium Candidate
+\u{25AA}\u{FE0F} *Amount Paid:* ₹${rd.amount}
+\u{25AA}\u{FE0F} *Payment Mode:* Cash \u{1F4B5}
+\u{25AA}\u{FE0F} *Receipt ID:* ${rd.receiptNumber}
+\u{25AA}\u{FE0F} *Date:* ${rd.dateStr}
+\u{25AA}\u{FE0F} *Service:* Premium Candidate
 
-✅ Your Premium Candidate service is now *Active*.
+\u{2705} Your Premium Candidate service is now *Active*.
 
-⭐ *We Value Your Feedback*
+\u{2B50} *We Value Your Feedback*
 We would love to hear about your experience with Shiv Shakti Multi Service.
-👉 [Leave a Review]
+\u{1F449} [Leave a Review]
 
-Thank you for choosing us! 🤝
+Thank you for choosing us! \u{1F91D}
 
 *Warm Regards,*
 *Shiv Shakti Multi Service*
@@ -462,22 +462,22 @@ Recruitment • Placement • Multi Services`;
       return;
     }
 
-    const waText = `💳 *ONLINE PAYMENT REQUEST* 💳
+    const waText = `\u{1F4B3} *ONLINE PAYMENT REQUEST* \u{1F4B3}
 ━━━━━━━━━━━━━━━━━━━━━
 Dear *${onlinePayFor.user?.fullName || "Candidate"}*,
 
 We are pleased to inform you that your profile has been processed successfully. To proceed further, please complete your online payment.
 
 *Payment Details:*
-▪️ *Amount Due:* ₹${onlinePayForm.amount}
-▪️ *Service:* Premium Candidate
+\u{25AA}\u{FE0F} *Amount Due:* ₹${onlinePayForm.amount}
+\u{25AA}\u{FE0F} *Service:* Premium Candidate
 
-👉 *Click below to pay securely via Razorpay:*
-🔗 ${onlinePayForm.link}
+\u{1F449} *Click below to pay securely via Razorpay:*
+\u{1F517} ${onlinePayForm.link}
 
-⚠️ *Important Note:* Once the payment is completed, kindly reply to this message with a *screenshot of the payment receipt* for confirmation.
+\u{26A0}\u{FE0F} *Important Note:* Once the payment is completed, kindly reply to this message with a *screenshot of the payment receipt* for confirmation.
 
-Thank you! 🤝
+Thank you! \u{1F91D}
 
 *Warm Regards,*
 *Shiv Shakti Multi Service*
@@ -517,26 +517,26 @@ _Recruitment & Placement Services_
 
         if (result.receiptDetails) {
           const rd = result.receiptDetails;
-          const waText = `🧾 *OFFICIAL ONLINE PAYMENT RECEIPT* 🧾
+          const waText = `\u{1F9FE} *OFFICIAL ONLINE PAYMENT RECEIPT* \u{1F9FE}
 ━━━━━━━━━━━━━━━━━━━━━
 Dear *${rd.candidateName}*,
 
-We are pleased to confirm that your online payment has been successfully received. Welcome to our Premium Candidate service! 🎉
+We are pleased to confirm that your online payment has been successfully received. Welcome to our Premium Candidate service! \u{1F389}
 
 *Payment Details:*
-▪️ *Amount Paid:* ₹${rd.amount}
-▪️ *Payment Mode:* Online 💳
-▪️ *Receipt ID:* ${rd.receiptNumber}
-▪️ *Date:* ${rd.dateStr}
-▪️ *Service:* Premium Candidate
+\u{25AA}\u{FE0F} *Amount Paid:* ₹${rd.amount}
+\u{25AA}\u{FE0F} *Payment Mode:* Online \u{1F4B3}
+\u{25AA}\u{FE0F} *Receipt ID:* ${rd.receiptNumber}
+\u{25AA}\u{FE0F} *Date:* ${rd.dateStr}
+\u{25AA}\u{FE0F} *Service:* Premium Candidate
 
-✅ Your Premium Candidate service is now *Active*.
+\u{2705} Your Premium Candidate service is now *Active*.
 
-⭐ *We Value Your Feedback*
+\u{2B50} *We Value Your Feedback*
 We would love to hear about your experience with Shiv Shakti Multi Service.
-👉 [Leave a Review]
+\u{1F449} [Leave a Review]
 
-Thank you for choosing us! 🤝
+Thank you for choosing us! \u{1F91D}
 
 *Warm Regards,*
 *Shiv Shakti Multi Service*
