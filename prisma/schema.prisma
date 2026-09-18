@@ -62,6 +62,15 @@ model CandidateProfile {
   preferredJobField String?
   experience        String?
 
+  // Experienced Candidate Fields
+  expIndustry       String?
+  expJobProfile     String?
+  expLocation       String?
+  expQualification  String?
+  expTotalYears     String?
+  expPastSalary     String?
+  expExpectedSalary String?
+
   status String @default("Applied")
 
   headline String?

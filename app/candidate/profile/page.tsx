@@ -41,11 +41,18 @@ export default function CandidateProfilePage() {
   const [selectedJobField, setSelectedJobField] =
     useState("");
 
-  // Preferred Job Field = Excel wali actual job
   const [preferredJobField, setPreferredJobField] =
     useState("");
 
   const [experience, setExperience] = useState("");
+
+  const [expIndustry, setExpIndustry] = useState("");
+  const [expJobProfile, setExpJobProfile] = useState("");
+  const [expLocation, setExpLocation] = useState("");
+  const [expQualification, setExpQualification] = useState("");
+  const [expTotalYears, setExpTotalYears] = useState("");
+  const [expPastSalary, setExpPastSalary] = useState("");
+  const [expExpectedSalary, setExpExpectedSalary] = useState("");
 
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,6 +111,14 @@ export default function CandidateProfilePage() {
         setSelectedJobField(profile.selectedJobField || "");
         setPreferredJobField(profile.preferredJobField || "");
         setExperience(profile.experience || "");
+
+        setExpIndustry(profile.expIndustry || "");
+        setExpJobProfile(profile.expJobProfile || "");
+        setExpLocation(profile.expLocation || "");
+        setExpQualification(profile.expQualification || "");
+        setExpTotalYears(profile.expTotalYears || "");
+        setExpPastSalary(profile.expPastSalary || "");
+        setExpExpectedSalary(profile.expExpectedSalary || "");
 
         // ========================================
         // Load saved Job
@@ -215,7 +230,14 @@ export default function CandidateProfilePage() {
       | "passingYear"
       | "skills"
       | "preferredJobField"
-      | "experience",
+      | "experience"
+      | "expIndustry"
+      | "expJobProfile"
+      | "expLocation"
+      | "expQualification"
+      | "expTotalYears"
+      | "expPastSalary"
+      | "expExpectedSalary",
     value: string
   ) => {
     switch (field) {
@@ -241,6 +263,27 @@ export default function CandidateProfilePage() {
 
       case "experience":
         setExperience(value);
+        break;
+      case "expIndustry":
+        setExpIndustry(value);
+        break;
+      case "expJobProfile":
+        setExpJobProfile(value);
+        break;
+      case "expLocation":
+        setExpLocation(value);
+        break;
+      case "expQualification":
+        setExpQualification(value);
+        break;
+      case "expTotalYears":
+        setExpTotalYears(value);
+        break;
+      case "expPastSalary":
+        setExpPastSalary(value);
+        break;
+      case "expExpectedSalary":
+        setExpExpectedSalary(value);
         break;
     }
 
@@ -353,6 +396,14 @@ export default function CandidateProfilePage() {
       if (!experience) {
         newErrors.experience =
           "Please select your experience.";
+      } else if (experience === "Experienced") {
+        if (!expIndustry.trim()) newErrors.expIndustry = "Industry is required.";
+        if (!expJobProfile.trim()) newErrors.expJobProfile = "Job Profile is required.";
+        if (!expLocation.trim()) newErrors.expLocation = "Location is required.";
+        if (!expQualification.trim()) newErrors.expQualification = "Qualification is required.";
+        if (!expTotalYears.trim()) newErrors.expTotalYears = "Total Experience is required.";
+        if (!expPastSalary.trim()) newErrors.expPastSalary = "Past Salary is required.";
+        if (!expExpectedSalary.trim()) newErrors.expExpectedSalary = "Expected Salary is required.";
       }
     }
 
@@ -451,6 +502,13 @@ export default function CandidateProfilePage() {
             preferredJobField,
 
             experience,
+            expIndustry: experience === "Experienced" ? expIndustry : "",
+            expJobProfile: experience === "Experienced" ? expJobProfile : "",
+            expLocation: experience === "Experienced" ? expLocation : "",
+            expQualification: experience === "Experienced" ? expQualification : "",
+            expTotalYears: experience === "Experienced" ? expTotalYears : "",
+            expPastSalary: experience === "Experienced" ? expPastSalary : "",
+            expExpectedSalary: experience === "Experienced" ? expExpectedSalary : "",
           }),
         }
       );
@@ -539,8 +597,16 @@ export default function CandidateProfilePage() {
 
                 experience={experience}
 
+                expIndustry={expIndustry}
+                expJobProfile={expJobProfile}
+                expLocation={expLocation}
+                expQualification={expQualification}
+                expTotalYears={expTotalYears}
+                expPastSalary={expPastSalary}
+                expExpectedSalary={expExpectedSalary}
+
                 onChange={
-                  handleProfessionalChange
+                  handleProfessionalChange as any
                 }
 
                 // New category handler

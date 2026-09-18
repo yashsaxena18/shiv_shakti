@@ -28,6 +28,13 @@ export async function POST(request: Request) {
       selectedJobField,
       preferredJobField,
       experience,
+      expIndustry,
+      expJobProfile,
+      expLocation,
+      expQualification,
+      expTotalYears,
+      expPastSalary,
+      expExpectedSalary,
       fullName,
     } = body;
 
@@ -71,6 +78,13 @@ export async function POST(request: Request) {
         selectedJobField,
         preferredJobField,
         experience,
+        expIndustry,
+        expJobProfile,
+        expLocation,
+        expQualification,
+        expTotalYears,
+        expPastSalary,
+        expExpectedSalary,
       },
 
       create: {
@@ -98,6 +112,13 @@ export async function POST(request: Request) {
         selectedJobField,
         preferredJobField,
         experience,
+        expIndustry,
+        expJobProfile,
+        expLocation,
+        expQualification,
+        expTotalYears,
+        expPastSalary,
+        expExpectedSalary,
       },
     });
 
@@ -282,6 +303,13 @@ export async function GET(request: Request) {
           selectedJobField: "",
           preferredJobField: "",
           experience: "",
+          expIndustry: "",
+          expJobProfile: "",
+          expLocation: "",
+          expQualification: "",
+          expTotalYears: "",
+          expPastSalary: "",
+          expExpectedSalary: "",
         },
       });
     }

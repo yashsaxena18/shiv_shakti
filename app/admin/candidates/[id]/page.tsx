@@ -151,7 +151,7 @@ export default function CandidateDetailsPage() {
           </section>
 
           {/* Professional Details */}
-          <section>
+          <section className="mb-8 sm:mb-10">
             <h2 className="mb-5 text-xl font-semibold text-zinc-900">
               Professional Details
             </h2>
@@ -180,6 +180,54 @@ export default function CandidateDetailsPage() {
               </div>
             </div>
           </section>
+
+          {/* Experience Details (Conditional) */}
+          {candidate.experience === "Experienced" && (
+            <section>
+              <h2 className="mb-5 text-xl font-semibold text-zinc-900">
+                Experience Details
+              </h2>
+
+              <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+                <Info
+                  label="Industry"
+                  value={candidate.expIndustry}
+                />
+
+                <Info
+                  label="Job Profile"
+                  value={candidate.expJobProfile}
+                />
+
+                <Info
+                  label="Location"
+                  value={candidate.expLocation}
+                />
+
+                <Info
+                  label="Qualification"
+                  value={candidate.expQualification}
+                />
+
+                <Info
+                  label="Total Experience"
+                  value={candidate.expTotalYears}
+                />
+
+                <Info
+                  label="Past Salary (Per Month)"
+                  value={candidate.expPastSalary}
+                />
+
+                <div className="md:col-span-2">
+                  <Info
+                    label="Expected Salary (Per Month)"
+                    value={candidate.expExpectedSalary}
+                  />
+                </div>
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
@@ -195,8 +243,8 @@ function Info({
 }) {
   const displayValue =
     value === null ||
-    value === undefined ||
-    value === ""
+      value === undefined ||
+      value === ""
       ? "Not Added"
       : String(value);
 

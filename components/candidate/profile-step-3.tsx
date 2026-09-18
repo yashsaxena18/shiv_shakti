@@ -14,6 +14,14 @@ type Props = {
 
   experience: string;
 
+  expIndustry: string;
+  expJobProfile: string;
+  expLocation: string;
+  expQualification: string;
+  expTotalYears: string;
+  expPastSalary: string;
+  expExpectedSalary: string;
+
   jobCategories: JobCategories;
   jobCategoryNames: string[];
 
@@ -26,7 +34,14 @@ type Props = {
       | "passingYear"
       | "skills"
       | "preferredJobField"
-      | "experience",
+      | "experience"
+      | "expIndustry"
+      | "expJobProfile"
+      | "expLocation"
+      | "expQualification"
+      | "expTotalYears"
+      | "expPastSalary"
+      | "expExpectedSalary",
     value: string
   ) => void;
 
@@ -43,6 +58,13 @@ export default function ProfileStep3({
   selectedJobField,
   preferredJobField,
   experience,
+  expIndustry,
+  expJobProfile,
+  expLocation,
+  expQualification,
+  expTotalYears,
+  expPastSalary,
+  expExpectedSalary,
   jobCategories,
   jobCategoryNames,
   onChange,
@@ -271,6 +293,128 @@ export default function ProfileStep3({
         </div>
 
       </div>
+
+      {/* Conditional Fields for Experienced Candidates */}
+      {experience === "Experienced" && (
+        <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+          <h3 className="mb-4 text-lg font-bold">Experience Details</h3>
+          <div className="grid gap-5 md:grid-cols-2">
+            
+            {/* Industry */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold">Industry</label>
+              <input
+                value={expIndustry}
+                onChange={(e) => onChange("expIndustry", e.target.value)}
+                placeholder="E.g. IT, Healthcare"
+                className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
+                  errors.expIndustry
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-zinc-300 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700"
+                }`}
+              />
+              {errors.expIndustry && <p className="mt-1 text-sm text-red-500">{errors.expIndustry}</p>}
+            </div>
+
+            {/* Job Profile */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold">Job Profile</label>
+              <input
+                value={expJobProfile}
+                onChange={(e) => onChange("expJobProfile", e.target.value)}
+                placeholder="E.g. Software Engineer"
+                className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
+                  errors.expJobProfile
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-zinc-300 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700"
+                }`}
+              />
+              {errors.expJobProfile && <p className="mt-1 text-sm text-red-500">{errors.expJobProfile}</p>}
+            </div>
+
+            {/* Location */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold">Location</label>
+              <input
+                value={expLocation}
+                onChange={(e) => onChange("expLocation", e.target.value)}
+                placeholder="E.g. Mumbai, Pune"
+                className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
+                  errors.expLocation
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-zinc-300 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700"
+                }`}
+              />
+              {errors.expLocation && <p className="mt-1 text-sm text-red-500">{errors.expLocation}</p>}
+            </div>
+
+            {/* Qualification */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold">Qualification</label>
+              <input
+                value={expQualification}
+                onChange={(e) => onChange("expQualification", e.target.value)}
+                placeholder="E.g. B.Tech, MBA"
+                className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
+                  errors.expQualification
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-zinc-300 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700"
+                }`}
+              />
+              {errors.expQualification && <p className="mt-1 text-sm text-red-500">{errors.expQualification}</p>}
+            </div>
+
+            {/* Total Experience */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold">Experience (Total Years)</label>
+              <input
+                value={expTotalYears}
+                onChange={(e) => onChange("expTotalYears", e.target.value)}
+                placeholder="E.g. 5 Years"
+                className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
+                  errors.expTotalYears
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-zinc-300 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700"
+                }`}
+              />
+              {errors.expTotalYears && <p className="mt-1 text-sm text-red-500">{errors.expTotalYears}</p>}
+            </div>
+
+            {/* Past Salary */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold">Past Salary</label>
+              <input
+                value={expPastSalary}
+                onChange={(e) => onChange("expPastSalary", e.target.value)}
+                placeholder="E.g. 10 LPA"
+                className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
+                  errors.expPastSalary
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-zinc-300 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700"
+                }`}
+              />
+              {errors.expPastSalary && <p className="mt-1 text-sm text-red-500">{errors.expPastSalary}</p>}
+            </div>
+
+            {/* Expected Salary */}
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-semibold">Expected Salary</label>
+              <input
+                value={expExpectedSalary}
+                onChange={(e) => onChange("expExpectedSalary", e.target.value)}
+                placeholder="E.g. 15 LPA"
+                className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
+                  errors.expExpectedSalary
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-zinc-300 focus:border-black focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700"
+                }`}
+              />
+              {errors.expExpectedSalary && <p className="mt-1 text-sm text-red-500">{errors.expExpectedSalary}</p>}
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
