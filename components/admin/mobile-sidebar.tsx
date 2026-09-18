@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -16,11 +17,12 @@ type Props = {
   onClose: () => void;
 };
 
-export default function MobileSidebar({
+function MobileSidebarContent({
   open,
   onClose,
 }: Props) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const menus = [
@@ -30,8 +32,13 @@ export default function MobileSidebar({
       icon: LayoutDashboard,
     },
     {
-      name: "Candidates",
-      href: "/admin/candidates",
+      name: "Paid Candidates",
+      href: "/admin/candidates?type=paid",
+      icon: Users,
+    },
+    {
+      name: "Unpaid Candidates",
+      href: "/admin/candidates?type=unpaid",
       icon: Users,
     },
     {
@@ -83,6 +90,12 @@ export default function MobileSidebar({
 
           {menus.map((menu) => {
             const Icon = menu.icon;
+            
+            const typeParam = searchParams.get("type");
+            let currentHref = pathname;
+            if (typeParam) currentHref += `?type=${typeParam}`;
+            
+            const active = currentHref === menu.href;
 
             return (
               <Link
@@ -90,7 +103,7 @@ export default function MobileSidebar({
                 href={menu.href}
                 onClick={onClose}
                 className={`flex items-center gap-3 rounded-xl px-4 py-3 transition ${
-                  pathname === menu.href
+                  active
                     ? "bg-black text-white"
                     : "hover:bg-zinc-100"
                 }`}
@@ -112,5 +125,13 @@ export default function MobileSidebar({
         </nav>
       </aside>
     </>
+  );
+}
+
+export default function MobileSidebar(props: Props) {
+  return (
+    <Suspense fallback={null}>
+      <MobileSidebarContent {...props} />
+    </Suspense>
   );
 }
