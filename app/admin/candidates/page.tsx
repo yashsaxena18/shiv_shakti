@@ -403,7 +403,7 @@ Important:
 Please arrive 10–15 minutes before the scheduled time and come prepared with the necessary documents and a copy of your updated resume.
 
 We wish you success in your interview and look forward to your presence.
-Please Provide Rating : Link 
+Please Provide Rating : https://g.page/r/CZZBLKQak0G_EBE/review 
 
 Warm Regards,
 Shiv Shakti Multi Service
@@ -480,6 +480,9 @@ We are pleased to inform you that your profile has been processed successfully. 
 \u{1F517} ${onlinePayForm.link}
 
 \u{26A0}\u{FE0F} *Important Note:* Once the payment is completed, kindly reply to this message with a *screenshot of the payment receipt* for confirmation.
+
+\u{2B50} *We Value Your Feedback*
+\u{1F449} [Leave a Review: https://g.page/r/CZZBLKQak0G_EBE/review]
 
 Thank you! \u{1F91D}
 
