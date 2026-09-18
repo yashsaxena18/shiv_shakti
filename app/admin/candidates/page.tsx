@@ -61,6 +61,7 @@ function CandidatesContent() {
   });
   const [linkSentData, setLinkSentData] = useState<Record<string, number>>({});
   const [confirmingPayment, setConfirmingPayment] = useState<string | null>(null);
+  const [processingCashId, setProcessingCashId] = useState<string | null>(null);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -293,6 +294,7 @@ function CandidatesContent() {
       return;
     }
 
+    setProcessingCashId(id);
     try {
       const response = await fetch(`/api/admin/candidates/${id}/mark-paid`, {
         method: "POST",
@@ -351,6 +353,8 @@ _Recruitment & Placement Services_
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong.");
+    } finally {
+      setProcessingCashId(null);
     }
   };
 
@@ -898,23 +902,24 @@ _Recruitment & Placement Services_
                                   <>
                                     <button
                                       onClick={() => markAsPaidCash(candidate.id)}
-                                      className="rounded bg-green-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700"
+                                      disabled={processingCashId === candidate.id}
+                                      className="rounded bg-green-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                                     >
-                                      Mark Paid (Cash)
+                                      {processingCashId === candidate.id ? "Processing..." : "Mark Paid (Cash)"}
                                     </button>
                                     
                                     {linkSentData[candidate.id] ? (
                                       <button
                                         onClick={() => confirmOnlinePayment(candidate.id, linkSentData[candidate.id])}
                                         disabled={confirmingPayment === candidate.id}
-                                        className="rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
+                                        className="rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-700 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                                       >
                                         {confirmingPayment === candidate.id ? "Confirming..." : "Confirm Payment"}
                                       </button>
                                     ) : (
                                       <button
                                         onClick={() => setOnlinePayFor(candidate)}
-                                        className="rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-700"
+                                        className="rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-700 cursor-pointer"
                                       >
                                         Fees (Online Pay)
                                       </button>
@@ -924,7 +929,7 @@ _Recruitment & Placement Services_
 
                                 <button
                                   onClick={() => setSchedulingFor(candidate)}
-                                  className="flex items-center gap-1 rounded bg-orange-500 px-3 py-2 text-xs text-white transition hover:bg-orange-600"
+                                  className="flex items-center gap-1 rounded bg-orange-500 px-3 py-2 text-xs text-white transition hover:bg-orange-600 cursor-pointer"
                                 >
                                   <CalendarDays size={14} />
                                   Schedule
@@ -932,14 +937,14 @@ _Recruitment & Placement Services_
 
                                 <Link
                                   href={`/admin/candidates/${candidate.id}`}
-                                  className="rounded bg-blue-600 px-3 py-2 text-xs text-white transition hover:bg-blue-700"
+                                  className="rounded bg-blue-600 px-3 py-2 text-xs text-white transition hover:bg-blue-700 cursor-pointer"
                                 >
                                   View
                                 </Link>
 
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
-                                    <button className="rounded bg-red-600 px-3 py-2 text-xs text-white transition hover:bg-red-700">
+                                    <button className="rounded bg-red-600 px-3 py-2 text-xs text-white transition hover:bg-red-700 cursor-pointer">
                                       Delete
                                     </button>
                                   </AlertDialogTrigger>
@@ -1114,23 +1119,24 @@ _Recruitment & Placement Services_
                           <>
                             <button
                               onClick={() => markAsPaidCash(candidate.id)}
-                              className="col-span-1 rounded-xl bg-green-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-green-700"
+                              disabled={processingCashId === candidate.id}
+                              className="col-span-1 rounded-xl bg-green-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-green-700 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                             >
-                              Mark Paid (Cash)
+                              {processingCashId === candidate.id ? "Processing..." : "Mark Paid (Cash)"}
                             </button>
                             
                             {linkSentData[candidate.id] ? (
                               <button
                                 onClick={() => confirmOnlinePayment(candidate.id, linkSentData[candidate.id])}
                                 disabled={confirmingPayment === candidate.id}
-                                className="col-span-1 rounded-xl bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-70"
+                                className="col-span-1 rounded-xl bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                               >
                                 {confirmingPayment === candidate.id ? "Confirming..." : "Confirm Payment"}
                               </button>
                             ) : (
                               <button
                                 onClick={() => setOnlinePayFor(candidate)}
-                                className="col-span-1 rounded-xl bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700"
+                                className="col-span-1 rounded-xl bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700 cursor-pointer"
                               >
                                 Fees (Online Pay)
                               </button>
@@ -1140,7 +1146,7 @@ _Recruitment & Placement Services_
                         
                         <button
                           onClick={() => setSchedulingFor(candidate)}
-                          className="col-span-2 flex items-center justify-center gap-1 rounded-xl bg-orange-500 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600"
+                          className="col-span-2 flex items-center justify-center gap-1 rounded-xl bg-orange-500 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600 cursor-pointer"
                         >
                           <CalendarDays size={16} />
                           Schedule Interview
@@ -1148,14 +1154,14 @@ _Recruitment & Placement Services_
 
                         <Link
                           href={`/admin/candidates/${candidate.id}`}
-                          className="rounded-xl bg-blue-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-blue-700"
+                          className="rounded-xl bg-blue-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-blue-700 cursor-pointer"
                         >
                           View
                         </Link>
 
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <button className="rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700">
+                            <button className="rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 cursor-pointer">
                               Delete
                             </button>
                           </AlertDialogTrigger>
