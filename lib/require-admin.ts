@@ -8,14 +8,22 @@ export async function requireAdmin() {
     throw new Error("Unauthorized");
   }
 
-  const payload = verifyToken(token) as {
-    id: string;
-    role: string;
-  };
+  try {
+    const payload = verifyToken(token) as {
+      id: string;
+      role: string;
+    };
 
-  if (payload.role !== "admin") {
-    throw new Error("Forbidden");
+    if (payload.role !== "admin") {
+      throw new Error("Forbidden");
+    }
+
+    return payload;
+  } catch (error: any) {
+    if (error.message === "Forbidden") {
+      throw error;
+    }
+    // Token verification failed (e.g. invalid signature, expired)
+    throw new Error("Unauthorized");
   }
-
-  return payload;
 }

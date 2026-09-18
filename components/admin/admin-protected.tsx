@@ -27,6 +27,22 @@ export default function AdminProtected({
     }
 
     setChecking(false);
+
+    // Set up a global fetch interceptor to catch 401s
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      const response = await originalFetch(...args);
+      if (response.status === 401) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("userId");
+        router.replace("/login");
+      }
+      return response;
+    };
+
+    return () => {
+      window.fetch = originalFetch;
+    };
   }, [router]);
 
   if (checking) {

@@ -317,33 +317,31 @@ function CandidatesContent() {
 
         if (result.receiptDetails) {
           const rd = result.receiptDetails;
-          const waText = `Payment Receipt
+          const waText = `🧾 *OFFICIAL PAYMENT RECEIPT* 🧾
+━━━━━━━━━━━━━━━━━━━━━
+Dear *${rd.candidateName}*,
 
-Dear Sir/Mam ${rd.candidateName},
+We are pleased to confirm that your payment has been successfully received. Welcome to our Premium Candidate service! 🎉
 
-We are pleased to confirm that your payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.
+*Payment Details:*
+▪️ *Amount Paid:* ₹${rd.amount}
+▪️ *Payment Mode:* Cash 💵
+▪️ *Receipt ID:* ${rd.receiptNumber}
+▪️ *Date:* ${rd.dateStr}
+▪️ *Service:* Premium Candidate
 
-Payment Details
+✅ Your Premium Candidate service is now *Active*.
 
-Amount Paid: ₹${rd.amount}
-Payment Method: Cash
-Receipt ID: ${rd.receiptNumber}
-Payment Date: ${rd.dateStr}
-Service: Premium Candidate
-
-Your payment has been recorded successfully, and your Premium Candidate service is now active.
-
-⭐ We Value Your Feedback
-
+⭐ *We Value Your Feedback*
 We would love to hear about your experience with Shiv Shakti Multi Service.
-
 👉 [Leave a Review]
 
-Thank you for choosing Shiv Shakti Multi Service.
+Thank you for choosing us! 🤝
 
-Warm Regards,
-Shiv Shakti Multi Service
-Recruitment & Placement Services`;
+*Warm Regards,*
+*Shiv Shakti Multi Service*
+_Recruitment & Placement Services_
+━━━━━━━━━━━━━━━━━━━━━`;
 
           window.open(`https://wa.me/91${rd.phone}?text=${encodeURIComponent(waText)}`, "_blank");
         }
@@ -464,20 +462,27 @@ Recruitment • Placement • Multi Services`;
       return;
     }
 
-    const waText = `Payment Request
+    const waText = `💳 *ONLINE PAYMENT REQUEST* 💳
+━━━━━━━━━━━━━━━━━━━━━
+Dear *${onlinePayFor.user?.fullName || "Candidate"}*,
 
-Dear Sir/Mam ${onlinePayFor.user?.fullName || "Candidate"},
+We are pleased to inform you that your profile has been processed successfully. To proceed further, please complete your online payment.
 
-We are pleased to inform you that your profile has been processed. To proceed further, please complete your online payment of ₹${onlinePayForm.amount}.
+*Payment Details:*
+▪️ *Amount Due:* ₹${onlinePayForm.amount}
+▪️ *Service:* Premium Candidate
 
-👉 Click here to pay securely via Razorpay:
-${onlinePayForm.link}
+👉 *Click below to pay securely via Razorpay:*
+🔗 ${onlinePayForm.link}
 
-Please note: Once the payment is completed, kindly share a screenshot of the payment receipt here for confirmation.
+⚠️ *Important Note:* Once the payment is completed, kindly reply to this message with a *screenshot of the payment receipt* for confirmation.
 
-Warm Regards,
-Shiv Shakti Multi Service
-Recruitment & Placement Services`;
+Thank you! 🤝
+
+*Warm Regards,*
+*Shiv Shakti Multi Service*
+_Recruitment & Placement Services_
+━━━━━━━━━━━━━━━━━━━━━`;
 
     window.open(`https://wa.me/91${onlinePayFor.phone}?text=${encodeURIComponent(waText)}`, "_blank");
     
@@ -512,33 +517,31 @@ Recruitment & Placement Services`;
 
         if (result.receiptDetails) {
           const rd = result.receiptDetails;
-          const waText = `Online Payment Receipt
+          const waText = `🧾 *OFFICIAL ONLINE PAYMENT RECEIPT* 🧾
+━━━━━━━━━━━━━━━━━━━━━
+Dear *${rd.candidateName}*,
 
-Dear Sir/Mam ${rd.candidateName},
+We are pleased to confirm that your online payment has been successfully received. Welcome to our Premium Candidate service! 🎉
 
-We are pleased to confirm that your online payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.
+*Payment Details:*
+▪️ *Amount Paid:* ₹${rd.amount}
+▪️ *Payment Mode:* Online 💳
+▪️ *Receipt ID:* ${rd.receiptNumber}
+▪️ *Date:* ${rd.dateStr}
+▪️ *Service:* Premium Candidate
 
-Payment Details
+✅ Your Premium Candidate service is now *Active*.
 
-Amount Paid: ₹${rd.amount}
-Payment Method: Online
-Receipt ID: ${rd.receiptNumber}
-Payment Date: ${rd.dateStr}
-Service: Premium Candidate
-
-Your payment has been recorded successfully, and your Premium Candidate service is now active.
-
-⭐ We Value Your Feedback
-
+⭐ *We Value Your Feedback*
 We would love to hear about your experience with Shiv Shakti Multi Service.
-
 👉 [Leave a Review]
 
-Thank you for choosing Shiv Shakti Multi Service.
+Thank you for choosing us! 🤝
 
-Warm Regards,
-Shiv Shakti Multi Service
-Recruitment & Placement Services`;
+*Warm Regards,*
+*Shiv Shakti Multi Service*
+_Recruitment & Placement Services_
+━━━━━━━━━━━━━━━━━━━━━`;
 
           window.open(`https://wa.me/91${rd.phone}?text=${encodeURIComponent(waText)}`, "_blank");
         }
