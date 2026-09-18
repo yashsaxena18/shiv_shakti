@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/require-admin";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(
   req: Request,
@@ -78,48 +75,7 @@ export async function POST(
       timeStyle: 'short' 
     });
 
-    // Send email receipt
-    try {
-      await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: candidate.user.email,
-        subject: "Online Payment Receipt - Shiv Shakti Multi Service",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.6; color: #333;">
-            <p><strong>Payment Receipt</strong></p>
 
-            <p>Dear Sir/Mam ${candidate.user.fullName},</p>
-
-            <p>We are pleased to confirm that your online payment has been successfully received. Thank you for choosing Shiv Shakti Multi Service and upgrading to our Premium Candidate service.</p>
-
-            <p><strong>Payment Details</strong></p>
-
-            <p>Amount Paid: ₹${amount}<br/>
-            Payment Method: Online<br/>
-            Receipt ID: ${receiptNumber}<br/>
-            Payment Date: ${dateStr}<br/>
-            Service: Premium Candidate</p>
-
-            <p>Your payment has been recorded successfully, and your Premium Candidate service is now active.</p>
-
-            <p>⭐ <strong>We Value Your Feedback</strong></p>
-
-            <p>We would love to hear about your experience with Shiv Shakti Multi Service.</p>
-
-            <p>👉 [Leave a Review]</p>
-
-            <p>Thank you for choosing Shiv Shakti Multi Service.</p>
-
-            <p>Warm Regards,<br/>
-            <strong>Shiv Shakti Multi Service</strong><br/>
-            <span style="color: #666; font-size: 0.9em;">Recruitment & Placement Services</span></p>
-          </div>
-        `,
-      });
-    } catch (emailError) {
-      console.error("Failed to send receipt email:", emailError);
-      // We don't fail the request if email fails
-    }
 
     return NextResponse.json({
       success: true,

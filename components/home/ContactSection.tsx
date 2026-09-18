@@ -38,29 +38,13 @@ export default function ContactSection() {
             return;
         }
 
-        setLoading(true);
-        try {
-            const response = await fetch("/api/contact", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                toast.error(result.message || "Failed to send message");
-                return;
-            }
-
-            toast.success("Message sent successfully!");
-            setFormData({ name: "", email: "", phone: "", message: "" });
-        } catch (error) {
-            console.error(error);
-            toast.error("An error occurred. Please try again later.");
-        } finally {
-            setLoading(false);
-        }
+        const text = `Hi, I am ${formData.name}.\nEmail: ${formData.email}\nPhone: ${formData.phone}\nMessage: ${formData.message}`;
+        const encodedText = encodeURIComponent(text);
+        const whatsappUrl = `https://wa.me/917088642658?text=${encodedText}`;
+        
+        window.open(whatsappUrl, '_blank');
+        toast.success("Redirecting to WhatsApp...");
+        setFormData({ name: "", email: "", phone: "", message: "" });
     };
 
     return (
