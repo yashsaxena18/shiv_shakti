@@ -9,6 +9,24 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteNavbar } from "@/components/site-navbar";
 
 export default function Home() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'EmploymentAgency',
+    name: 'Shiv Shakti Multi Service',
+    url: 'https://www.shivshaktimultiservice.co.in/',
+    description: 'Shiv Shakti Multi Service is a modern recruitment consultancy helping People to get the Jobs.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Nehru Colony , Near by Mantra Apartments , Sidcul ,Haridwar',
+      addressLocality: 'Haridwar',
+      addressRegion: 'Uttarakhand',
+      postalCode: '249403',
+      addressCountry: 'IN'
+    },
+    telephone: '+917088642658',
+    email: 'jobshiring.hrteam@gmail.com'
+  };
+
   return (
     <div
       className="
@@ -23,6 +41,10 @@ export default function Home() {
         dark:text-zinc-50
       "
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* =====================================================
           NAVBAR
       ====================================================== */}

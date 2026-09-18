@@ -16,8 +16,53 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.shivshaktimultiservice.co.in"),
   title: "Shiv Shakti Multi Service | Premium Recruitment Consultancy",
   description: "Shiv Shakti Multi Service is a modern recruitment consultancy helping teams hire with clarity and confidence.",
+  keywords: [
+    "Recruitment in Haridwar", 
+    "Job Consultancy", 
+    "Hiring agency", 
+    "Shiv Shakti Multi Service", 
+    "Jobs in Uttarakhand", 
+    "Placement agency",
+    "Career Opportunities",
+    "top placement agency in India",
+    "top placement agency in Haridwar",
+    "best placement agency in Uttarakhand",
+    "Professional hiring agency in India",
+    "Most trusted placement agency in India",
+    "Recruitment services in Haridwar",
+    "Staffing solutions in Uttarakhand",
+    "Job placement services in Haridwar",
+    "Top HR consultancy in Uttarakhand",
+    "Shubham Machal",
+    "shubhammachalofficial",
+    "Industrial consultancy",
+    "sidcul jobs",
+    "Haridwar Jobs",
+    "Available Sidcul Industrial Jobs",
+    "onrole jobs",
+    "permanent jobs",
+
+    
+  ],
+  openGraph: {
+    title: "Shiv Shakti Multi Service | Premium Recruitment Consultancy",
+    description: "Shiv Shakti Multi Service is a modern recruitment consultancy helping People to get the Jobs.",
+    url: "https://www.shivshaktimultiservice.co.in/",
+    siteName: "Shiv Shakti Multi Service",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shiv Shakti Multi Service | Premium Recruitment Consultancy",
+    description: "Shiv Shakti Multi Service is a modern recruitment consultancy helping People to get the Jobs.",
+  },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({

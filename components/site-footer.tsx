@@ -13,12 +13,34 @@ const links = [
   ["Login", "/login"],
 ];
 
+const InstagramIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+  </svg>
+);
+
+const FacebookIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+  </svg>
+);
+
+const LinkedinIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+    <rect width="4" height="12" x="2" y="9"/>
+    <circle cx="4" cy="4" r="2"/>
+  </svg>
+);
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-white/20 bg-black text-white dark:border-black/20 dark:bg-white dark:text-black">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        <div className="grid gap-8 py-8 sm:grid-cols-2 lg:grid-cols-3 lg:py-10">
+        <div className="grid gap-8 py-8 sm:grid-cols-2 lg:grid-cols-4 lg:py-10">
 
           {/* Brand */}
           <div>
@@ -91,8 +113,10 @@ export function SiteFooter() {
 
             <div className="mt-3 space-y-2.5">
               <a
-                href="#contact"
-                className="flex items-center gap-2 text-xs text-zinc-300 dark:text-zinc-700"
+                href="https://maps.app.goo.gl/vYPjDSKxoQpwb3Eq6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-xs text-zinc-300 transition hover:text-white dark:text-zinc-700 dark:hover:text-black"
               >
                 <MapPin size={14} />
                 Haridwar, Uttarakhand
@@ -116,6 +140,42 @@ export function SiteFooter() {
                 <Phone size={14} />
                 +91 7088642658
               </a>
+            </div>
+          </div>
+
+          {/* Socials */}
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-600">
+              Connect With Us
+            </h3>
+
+            <div className="mt-3 space-y-4">
+              <div>
+                <p className="mb-2 text-[10px] font-semibold text-zinc-500">Official</p>
+                <div className="flex gap-4">
+                  <a href="https://www.instagram.com/shivshaktimultiservice?stkn=MTh2aXo3Z2R2aWhlbw%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-[#E4405F] transition hover:opacity-80">
+                    <InstagramIcon size={16} />
+                  </a>
+                  <a href="https://www.facebook.com/share/1Dbw2Y7CJj/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-[#1877F2] transition hover:opacity-80">
+                    <FacebookIcon size={16} />
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-[10px] font-semibold text-zinc-500">Founder (Shubham Machal)</p>
+                <div className="flex gap-4">
+                  <a href="https://www.instagram.com/shubhammachaloffical?stkn=MXRhNzBwYWE2aDYxeA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-[#E4405F] transition hover:opacity-80">
+                    <InstagramIcon size={16} />
+                  </a>
+                  <a href="https://www.facebook.com/share/1DoKnhbV1S/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-[#1877F2] transition hover:opacity-80">
+                    <FacebookIcon size={16} />
+                  </a>
+                  <a href="https://www.linkedin.com/in/shubham-machal/" target="_blank" rel="noopener noreferrer" className="text-[#0A66C2] transition hover:opacity-80">
+                    <LinkedinIcon size={16} />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
