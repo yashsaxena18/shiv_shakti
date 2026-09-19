@@ -243,7 +243,7 @@ export async function POST(req: Request) {
     const emailResult = await resend.emails.send({
       from: "Shiv Shakti Multi Service <info@shivshaktimultiservice.co.in>",
       to: user.email,
-      reply_to: "jobshiring.hrteam@gmail.com",
+      replyTo: "jobshiring.hrteam@gmail.com",
       subject: "Payment Receipt - Shiv Shakti Multi Service",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #18181b;">

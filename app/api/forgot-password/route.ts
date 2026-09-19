@@ -68,7 +68,7 @@ if (!success) {
     await resend.emails.send({
       from: "Shiv Shakti Multi Service <info@shivshaktimultiservice.co.in>",
       to: cleanEmail,
-      reply_to: "jobshiring.hrteam@gmail.com",
+      replyTo: "jobshiring.hrteam@gmail.com",
       subject: "Password Reset OTP",
 
       html: `
