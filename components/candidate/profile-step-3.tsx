@@ -382,11 +382,11 @@ export default function ProfileStep3({
 
             {/* Past Salary */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">Past Salary</label>
+              <label className="mb-2 block text-sm font-semibold">Past Salary (Per Month)</label>
               <input
                 value={expPastSalary}
                 onChange={(e) => onChange("expPastSalary", e.target.value)}
-                placeholder="E.g. 10 LPA"
+                placeholder="E.g. 50,000"
                 className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
                   errors.expPastSalary
                     ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
@@ -398,11 +398,11 @@ export default function ProfileStep3({
 
             {/* Expected Salary */}
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-semibold">Expected Salary</label>
+              <label className="mb-2 block text-sm font-semibold">Expected Salary (Per Month)</label>
               <input
                 value={expExpectedSalary}
                 onChange={(e) => onChange("expExpectedSalary", e.target.value)}
-                placeholder="E.g. 15 LPA"
+                placeholder="E.g. 60,000"
                 className={`h-11 w-full rounded-xl border bg-white px-3 transition-all duration-200 focus:outline-none dark:bg-zinc-900 ${
                   errors.expExpectedSalary
                     ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
