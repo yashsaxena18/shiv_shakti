@@ -90,7 +90,7 @@ export async function POST(
             Please arrive 10–15 minutes before the scheduled time and come prepared with the necessary documents and a copy of your updated resume.</p>
 
             <p>We wish you success in your interview and look forward to your presence.<br/>
-            Please Provide Rating : Link </p>
+            Please Provide Rating: <a href="https://g.page/r/CZZBLKQak0G_EBE/review" style="color: #0066cc;">https://g.page/r/CZZBLKQak0G_EBE/review</a></p>
 
             <p>Warm Regards,<br/>
             <strong>Shiv Shakti Multi Service</strong><br/>

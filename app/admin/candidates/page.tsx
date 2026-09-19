@@ -336,7 +336,7 @@ We are pleased to confirm that your payment has been successfully received. Welc
 
 \u{2B50} *We Value Your Feedback*
 We would love to hear about your experience with Shiv Shakti Multi Service.
-\u{1F449} [Leave a Review]
+\u{1F449} [Leave a Review: https://g.page/r/CZZBLKQak0G_EBE/review]
 
 Thank you for choosing us! \u{1F91D}
 
@@ -541,7 +541,7 @@ We are pleased to confirm that your online payment has been successfully receive
 
 \u{2B50} *We Value Your Feedback*
 We would love to hear about your experience with Shiv Shakti Multi Service.
-\u{1F449} [Leave a Review]
+\u{1F449} [Leave a Review: https://g.page/r/CZZBLKQak0G_EBE/review]
 
 Thank you for choosing us! \u{1F91D}
 
